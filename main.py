@@ -31,8 +31,8 @@ def main():
                 if subaction == "Q":
                     break
 
-                print("Ação inválida.")
-                continue
+                else:
+                    print("Ação inválida.")
 
         if action == "2":
             while True:
@@ -51,7 +51,8 @@ def main():
                 if subaction == "Q":
                     break
 
-                print("Ação inválida.")
+                else:
+                    print("Ação inválida.")
 
         if action == "3":
             while True:
@@ -71,8 +72,8 @@ def main():
                 if subaction == "Q":
                     break
 
-                print("Ação inválida.")
-                continue
+                else:
+                    print("Ação inválida.")
 
         if action == "Q":
             break
