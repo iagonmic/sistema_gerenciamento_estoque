@@ -1,4 +1,6 @@
+from linkedlist import LinkedList
+
 class Stock:
 
     def __init__(self):
-        pass
+        self.stock = LinkedList()
