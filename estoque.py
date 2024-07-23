@@ -40,15 +40,8 @@ class Stock:
             highest = None
 
             for product in all_products:
-                if highest == None:
+                if highest == None or product.quantity >= highest.quantity:
                     highest = product
-                
-                if product.quantity >= highest.quantity:
-                    highest = product
-                    print(f"O produto atual é {product.quantity}")
-                    print(f"O highest {highest.quantity} foi atribuido como produto")
-
-            print(f"O highest que será feito o append e removido é: {highest.quantity}")
                 
             ordered_list.append(highest)
             all_products.remove(highest)
