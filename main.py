@@ -7,16 +7,14 @@ def main():
         action = input("""Digite 1 - para adicionar, remover ou atualizar produtos,
                     Digite 2 - para buscar produto, por categoria, por quantidade,
                     Digite 3 - para listar os produtos,
-                    Digite Q - para sair.
-                """).upper()
+                    Digite Q - para sair.""").upper()
 
         if action == "1":
             while True:
                 subaction = input("""Digite 1 - para adicionar um produto,
-                            Digite 2 - para remover um produto,
-                            Digite 3 - para atualizar um produto,
-                            Digite Q - para sair.
-                        """).upper()
+                        Digite 2 - para remover um produto,
+                        Digite 3 - para atualizar um produto,
+                        Digite Q - para sair.""").upper()
             
                 if subaction == "1":    # TODO
                     stock.add_product()
@@ -40,8 +38,7 @@ def main():
             while True:
                 subaction = input("""Digite 1 - para buscar um produto,
                             Digite 2 - para buscar por categoria,
-                            Digite Q - para sair.
-                        """).upper()
+                            Digite Q - para sair.""").upper()
                 
                 if subaction == "1":
                     stock.get_product_by_name() # TODO
@@ -61,8 +58,7 @@ def main():
 
                 subaction = input("""Digite 1 - para listar produtos,
                             Digite 2 - para listar produtos por quantidade,
-                            Digite Q - para sair.
-                        """).upper()
+                            Digite Q - para sair.""").upper()
                 
                 if subaction == "1":
                     stock.get_all_products()    # TODO
@@ -83,7 +79,7 @@ def main():
 
         pass
 
-if __name__ == "main":
+if __name__ == "__main__":
     main()
     
     
