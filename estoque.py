@@ -21,6 +21,24 @@ class Stock:
             
         return None
     
+    def add_product():  # TODO
+        pass
+
+    def remove_product():  # TODO
+        pass
+
+    def update_product():  # TODO
+        pass
+
+    def get_product_by_name(): # TODO
+        pass
+
+    def get_product_by_category(): # TODO
+        pass
+
+    def get_all_products(): # TODO
+        pass
+
     #
     # Order by quantity if stock is not empty
     #
