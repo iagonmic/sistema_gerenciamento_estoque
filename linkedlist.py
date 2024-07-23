@@ -52,3 +52,23 @@ class LinkedList:
                 break
         
         return elements
+
+    #
+    # Get the first occurrence of element on list.
+    #
+    def get(self, element):
+
+        if self.is_empty():
+            return None
+        
+        node = self.head
+        while True:
+
+            if node.element == element:
+                return node.element
+            
+            node = node.next
+            if node is None:
+                break
+        
+        return None
