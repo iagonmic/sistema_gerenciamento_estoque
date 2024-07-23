@@ -54,16 +54,3 @@ class Stock:
             all_products.remove(highest)
 
         return ordered_list
-    
-teste = Stock()
-
-teste.stock.add(Product(1, 'iago', 'legal', 1, 1))
-teste.stock.add(Product(2, 'hertz', 'interessante', 3, 2))
-teste.stock.add(Product(3, 'caua', 'opressor', 5, 7))
-teste.stock.add(Product(4, 'luana', 'opressor', 4, 9))
-
-
-for product in teste.stock.get_all():
-    print(product.name, product.quantity, sep=',')
-for product in teste.order_by_quantity():
-    print(product.name, product.quantity)
