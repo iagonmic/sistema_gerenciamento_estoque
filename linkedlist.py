@@ -27,6 +27,30 @@ class LinkedList:
         self.last.next = node
         self.last = node
 
+    def remove(self, element):
+        if self.is_empty():  # Check if the list is empty.
+            return None
+
+        current = self.head
+        previous = None     # Saving node previous to the node to be removed.
+
+        while current is not None:
+            if current.element == element:
+                if previous is None: 
+                    self.head = current.next
+                    if self.head is None:  
+                        self.last = None
+                else:  
+                    previous.next = current.next   # Updating the next so that the previous node to be removed is equal to the next of the node that will be removed.
+                    if current.next is None:  
+                        self.last = previous
+
+                return element
+
+            previous = current
+            current = current.next
+
+        return None
 
     #
     # Check if the linked list is empty.
