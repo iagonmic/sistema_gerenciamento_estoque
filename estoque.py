@@ -78,11 +78,14 @@ class Stock:
     def get_product_by_category(): # TODO
         pass
 
-    def get_all_products(): # TODO
-        pass
+    #
+    # Get all products from stock
+    #
+    def get_all_products(self): 
+        return self.stock.get_all()
 
     #
-    # Order by quantity if stock is not empty
+    # Order by quantity from highest to lowest if stock is not empty
     #
     def order_by_quantity(self):
 
