@@ -20,15 +20,15 @@ def main():
                     stock.add_product()
                     pass
 
-                if subaction == "2":    # TODO
+                elif subaction == "2":    # TODO
                     stock.remove_product()
                     pass
 
-                if subaction == "3":    # TODO
+                elif subaction == "3":    # TODO
                     stock.update_product()
                     pass
 
-                if subaction == "Q":
+                elif subaction == "Q":
                     break
 
                 else:
@@ -44,11 +44,11 @@ def main():
                     stock.get_product_by_name() # TODO
                     pass
 
-                if subaction == "2":
+                elif subaction == "2":
                     stock.get_product_by_category() # TODO
                     pass
 
-                if subaction == "Q":
+                elif subaction == "Q":
                     break
 
                 else:
@@ -65,11 +65,11 @@ def main():
                     stock.get_all_products()    # TODO
                     pass
 
-                if subaction == "2":
+                elif subaction == "2":
                     stock.order_by_quantity()   # FIXME
                     pass
 
-                if subaction == "Q":
+                elif subaction == "Q":
                     break
 
                 else:
