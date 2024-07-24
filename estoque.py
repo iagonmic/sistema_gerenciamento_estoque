@@ -5,6 +5,28 @@ class Stock:
 
     def __init__(self):
         self.stock = LinkedList()
+        self.update_actions = [
+            { 
+                "action": "1",
+                "description": "Alterar o nome do produto.", 
+                "function": lambda product, new_value: setattr(product, 'name', new_value)
+            },
+            { 
+                "action": "2", 
+                "description": "Alterar a categoria do produto.", 
+                "function": lambda product, new_value: setattr(product, 'category', new_value)
+            },
+            { 
+                "action": "3", 
+                "description": "Alterar a quantidade do produto.", 
+                "function": lambda product, new_value: setattr(product, 'quantity', int(new_value))
+            },
+            { 
+                "action": "4", 
+                "description": "Alterar o preço do produto.", 
+                "function": lambda product, new_value: setattr(product, 'price', float(new_value))
+            }
+        ]
 
     #
     # Get product if exists, else return None
@@ -27,8 +49,28 @@ class Stock:
     def remove_product():  # TODO
         pass
 
-    def update_product():  # TODO
-        pass
+    def update_product(self, id):
+        product = self.get_product(id)
+        if product is None:
+            return
+        
+        for action in self.update_actions:
+            print(f"{action['action']}: {action['description']}")
+        
+        action_command = input("Insira o número de qual campo acima você quer alterar: ")
+        
+        action_object = None
+        for action in self.update_actions:
+            if action['action'] == action_command:
+                action_object = action
+        
+        if action_object is None:
+            print(f"Você inseriu uma ação inválida.")
+            self.update_product(id)
+            return
+
+        new_value = input("Insira o novo valor para o campo informado: ")
+        action_object['function'](product, new_value)
 
     def get_product_by_name(): # TODO
         pass
