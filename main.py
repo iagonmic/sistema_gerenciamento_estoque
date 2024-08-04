@@ -16,12 +16,17 @@ def main():
                         Digite 3 - para atualizar um produto,
                         Digite Q - para sair.""").upper()
             
-                if subaction == "1":    # TODO
-                    stock.add_product()
+                if subaction == "1":    
+                    name = input("Digite o nome do produto: ")
+                    category = input("Digite a categoria do produto: ")
+                    quantity = int(input("Digite a quantidade do produto: "))
+                    price = float(input("Digite o preço do produto: "))
+                    stock.add_product(name, category, quantity, price)
                     pass
 
-                elif subaction == "2":    # TODO
-                    stock.remove_product()
+                elif subaction == "2":
+                    id = int(input("Digite o ID do produto a ser removido: "))
+                    stock.remove_product(id)
                     pass
 
                 elif subaction == "3":    # TODO
