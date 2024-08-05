@@ -28,6 +28,14 @@ class Stock:
             }
         ]
 
+    # Variavel para salvar id
+    current_id = 0
+
+    # Gerando ID novo a cada criação
+    def generate_id(self):
+        Stock.current_id += 1
+        return Stock.current_id
+
     #
     # Get product if exists, else return None
     #
@@ -42,12 +50,20 @@ class Stock:
                 return product
             
         return None
-    
-    def add_product():  # TODO
-        pass
 
-    def remove_product():  # TODO
-        pass
+    def add_product(self, name, category, quantity, price):
+        id = self.generate_id()
+        new_product = Product(id, name, category, quantity, price)
+        self.stock.add(new_product)
+        print(f"Produto {name} adicionado com sucesso.")
+
+    def remove_product(self, id):
+        product = self.get_product(id)
+        if product is None:
+            print("Produto não encontrado.")
+            return
+        self.stock.remove(product)
+        print(f"Produto '{product.name}' removido com sucesso.")
 
     def update_product(self, id):
         product = self.get_product(id)
