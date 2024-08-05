@@ -88,8 +88,16 @@ class Stock:
         new_value = input("Insira o novo valor para o campo informado: ")
         action_object['function'](product, new_value)
 
-    def get_product_by_name(): # TODO
-        pass
+
+    # Get product if exists by name, else return none
+    def get_product_by_name(self, name):
+        all_products = self.stock.get_all()
+
+        for product in all_products:
+            if name == product.name:
+                return product
+        
+        return None
 
     def get_product_by_category(): # TODO
         pass
