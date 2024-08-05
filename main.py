@@ -62,7 +62,7 @@ def main():
                     pass
 
                 elif subaction == "2":
-                    stock.get_product_by_category() # TODO
+                    stock.get_products_by_category() # TODO
                     pass
 
                 elif subaction == "Q":
