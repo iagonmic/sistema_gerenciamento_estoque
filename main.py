@@ -37,9 +37,10 @@ def main():
                     stock.remove_product(id)
                     print("-" * 60)
 
-                elif subaction == "3":    # TODO
-                    stock.update_product()
-                    pass
+                elif subaction == "3":
+                    product_id = int(input("Digite o id do produto a ser atualizado: "))
+                    stock.update_product(product_id)
+                    # TODO
 
                 elif subaction == "Q":
                     break
@@ -47,7 +48,7 @@ def main():
                 else:
                     print("Ação inválida.")
 
-        if action == "2":
+        elif action == "2":
             while True:
                 subaction = input(
                     "Digite 1 - para buscar um produto,\n"
@@ -57,13 +58,27 @@ def main():
                 
                 print("-" * 60)
                 
-                if subaction == "1":
-                    stock.get_product_by_name() # TODO
-                    pass
+                if subaction == "1": # TODO
+                    product_name = input("Digite o nome do produto a ser encontrado: ")
+                    product = stock.get_product_by_name(product_name)
+                    if product:
+                        print("-" * 60)
+                        print(f"ID: {product.id}, Nome: {product.name}, Categoria: {product.category}, Quantidade: {product.quantity}, Preço: {product.price}")
+                        print("-" * 60)
+                    else:
+                        print("Nenhum produto encontrado.")
 
-                elif subaction == "2":
-                    stock.get_products_by_category() # TODO
-                    pass
+                elif subaction == "2": # TODO
+                    product_category = input("Digite a categoria do produto a ser encontrado: ")
+                    products = stock.get_products_by_category(product_category)
+                    if not products:
+                        print("Nenhum produto encontrado.")
+                    else:
+                        print("Relatório dos produtos")
+                        print("-" * 60)
+                        for product in products:
+                            print(f"ID: {product.id}, Nome: {product.name}, Categoria: {product.category}, Quantidade: {product.quantity}, Preço: {product.price}")
+                        print("-" * 60)
 
                 elif subaction == "Q":
                     break
@@ -71,7 +86,7 @@ def main():
                 else:
                     print("Ação inválida.")
 
-        if action == "3":
+        elif action == "3":
             while True:
 
                 subaction = input("Digite 1 - para listar produtos,\n"
@@ -93,7 +108,15 @@ def main():
                         print("-" * 60)
         
                 elif subaction == "2":
-                    stock.order_by_quantity()   # FIXME
+                    ordered_list = stock.order_by_quantity()   
+                    if not products:
+                        print("Nenhum produto encontrado.")
+                    else:
+                        print("Relatório dos produtos ordenados por quantidade")
+                        print("-" * 60)
+                        for product in ordered_list:
+                            print(f"ID: {product.id}, Nome: {product.name}, Categoria: {product.category}, Quantidade: {product.quantity}, Preço: {product.price}")
+                        print("-" * 60)
                     pass
 
                 elif subaction == "Q":
@@ -102,10 +125,11 @@ def main():
                 else:
                     print("Ação inválida.")
 
-        if action == "Q":
+        elif action == "Q":
             break
 
-        pass
+        else:
+            print("Ação inválida.")
 
 if __name__ == "__main__":
     main()
