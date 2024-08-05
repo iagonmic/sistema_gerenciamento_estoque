@@ -48,7 +48,7 @@ def main():
                 else:
                     print("Ação inválida.")
 
-        if action == "2":
+        elif action == "2":
             while True:
                 subaction = input(
                     "Digite 1 - para buscar um produto,\n"
@@ -86,7 +86,7 @@ def main():
                 else:
                     print("Ação inválida.")
 
-        if action == "3":
+        elif action == "3":
             while True:
 
                 subaction = input("Digite 1 - para listar produtos,\n"
@@ -125,7 +125,7 @@ def main():
                 else:
                     print("Ação inválida.")
 
-        if action == "Q":
+        elif action == "Q":
             break
 
         else:
