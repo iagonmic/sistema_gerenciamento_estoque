@@ -86,7 +86,7 @@ def main():
                     if not products:
                         print("Nenhum produto encontrado.")
                     else:
-                        print("Relatório dos produto")
+                        print("Relatório dos produtos")
                         print("-" * 60)
                         for product in products:
                             print(f"ID: {product.id}, Nome: {product.name}, Categoria: {product.category}, Quantidade: {product.quantity}, Preço: {product.price}")
