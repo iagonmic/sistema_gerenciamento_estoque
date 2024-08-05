@@ -5,6 +5,7 @@ class Stock:
 
     def __init__(self):
         self.stock = LinkedList()
+        self.current_id = 0
         self.update_actions = [
             { 
                 "action": "1",
@@ -28,13 +29,11 @@ class Stock:
             }
         ]
 
-    # Variavel para salvar id
-    current_id = 0
-
     # Gerando ID novo a cada criação
     def generate_id(self):
-        Stock.current_id += 1
-        return Stock.current_id
+        self.current_id += 1
+
+        return self.current_id
 
     #
     # Get product if exists, else return None
@@ -54,14 +53,17 @@ class Stock:
     def add_product(self, name, category, quantity, price):
         id = self.generate_id()
         new_product = Product(id, name, category, quantity, price)
+
         self.stock.add(new_product)
         print(f"Produto {name} adicionado com sucesso.")
 
     def remove_product(self, id):
         product = self.get_product(id)
+
         if product is None:
             print("Produto não encontrado.")
             return
+        
         self.stock.remove(product)
         print(f"Produto '{product.name}' removido com sucesso.")
 
@@ -92,15 +94,25 @@ class Stock:
     # Get product if exists by name, else return none
     def get_product_by_name(self, name):
         all_products = self.stock.get_all()
+        transformed_name = name.strip().lower()
 
         for product in all_products:
-            if name == product.name:
+            if transformed_name == product.name:
                 return product
         
         return None
 
-    def get_product_by_category(): # TODO
-        pass
+    def get_products_by_category(self, category): # TODO
+        products = []
+
+        all_products = self.stock.get_all()
+        transformed_category = category.strip().lower()
+
+        for product in all_products:
+            if transformed_category == product.category:
+                products.append(product)
+        
+        return products
 
     #
     # Get all products from stock
