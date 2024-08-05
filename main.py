@@ -1,7 +1,5 @@
 from estoque import Stock
 
-from estoque import Stock
-
 def main():
     stock = Stock()
 
