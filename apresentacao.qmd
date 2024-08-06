@@ -1,0 +1,289 @@
+---
+title: "Sistema de Gerenciamento de Estoque"
+author:
+    - Iago Flávio
+    - Hertz Rafael
+    - Cauã Wendel
+format:
+  revealjs:
+    theme: dark
+    transition: slide
+    slide-number: true
+    preview-links: auto
+    incremental: true
+---
+
+# Introdução
+
+- Tema do projeto: Sistema de Gerenciamento de Estoque
+- Implementado em Python
+- Utiliza funções, classes, listas encadeadas e recursão
+
+---
+
+## Objetivos do Projeto {auto-animate=true}
+
+![](https://img.freepik.com/vetores-premium/conceito-de-sistema-de-controle-de-estoque-gerente-profissional-verificacao-de-mercadorias-e-fornecimento-de-estoque-gerenciamento-de-estoque-com-demanda-de-mercadorias_185038-803.jpg)
+
+## Objetivos do Projeto {auto-animate=true}
+
+:::{.nonincremental}
+- Criar um sistema eficiente para gerenciar estoque 
+- Implementar operações básicas: adicionar, remover, atualizar e listar produtos
+- Utilizar estruturas de dados avançadas (listas encadeadas) para armazenamento
+:::
+
+---
+
+## Estruturas Utilizadas {background-color=#D9CAB3}
+
+- **Funções**: Para modularizar o código e melhorar a legibilidade
+- **Classes**: Para representar produtos e o estoque
+- **Listas Encadeadas**: Para armazenar os produtos de forma dinâmica
+- **Recursão**: Para otimizar o código na escrita das funções
+
+---
+
+## Organização do projeto
+
+O projeto foi organizado nos seguintes arquivos:
+
+- `linkedlist.py`: Guarda o funcionamento da lista encadeada
+- `produto.py`: Guarda a classe Product, responsável pelas informações dos produtos
+- `estoque.py`: Guarda a principal funcionalidade do sistema, a classe Stock
+- `main.py`: É o coração do sistema de gerenciamento de estoque, que é mostrado ao usuário
+
+
+# Principais classes utilizadas:
+
+:::{.nonincremental .fragment .fade-right}
+- Node
+- LinkedList
+- Product
+- Stock
+:::
+
+---
+
+## Classe Node
+
+```python
+class Node:
+
+    def __init__(self, element):
+        self.element = element
+        self.next = None
+```
+
+- Representa um nó em uma lista encadeada
+- Cada nó contém um dado (element) e uma referência (next) para o próximo nó na lista
+
+---
+
+## Classe LinkedList {auto-animate="true"}
+
+```python
+class LinkedList:
+
+    def __init__(self):
+        self.head: Node = None
+        self.last: Node = None
+    
+    #
+    # Add an element to final index of list.
+    #
+    def add(self, element):
+        node = Node(element)
+
+        #
+        # Check if the list is empty.
+        #
+        if self.is_empty():
+            self.head = node
+            self.last = node
+            return
+        
+        self.last.next = node
+        self.last = node
+
+    def remove(self, element):
+        if self.is_empty():  # Check if the list is empty.
+            return None
+
+        current = self.head
+        previous = None     # Saving node previous to the node to be removed.
+
+        while current is not None:
+            if current.element == element:
+                if previous is None: 
+                    self.head = current.next
+                    if self.head is None:  
+                        self.last = None
+                else:  
+                    previous.next = current.next   # Updating the next so that the previous node to be removed is equal to the next of the node that will be removed.
+                    if current.next is None:  
+                        self.last = previous
+
+                return element
+
+            previous = current
+            current = current.next
+
+        return None
+
+    #
+    # Check if the linked list is empty.
+    #
+    def is_empty(self) -> bool:
+        return self.head is None
+    
+    #
+    # Return an array with all elements.
+    #
+    def get_all(self):
+        elements = []
+
+        if self.is_empty():
+            return elements
+
+        node = self.head
+        while True:
+            elements.append(node.element)
+            node = node.next
+
+            if node is None:
+                break
+        
+        return elements
+
+    #
+    # Get the first occurrence of element on list.
+    #
+    def get(self, element):
+
+        if self.is_empty():
+            return None
+        
+        node = self.head
+        while True:
+
+            if node.element == element:
+                return node.element
+            
+            node = node.next
+            if node is None:
+                break
+        
+        return None
+```
+
+## Classe LinkedList {auto-animate=true}
+
+Seus principais métodos são:
+
+- `add(self, element)`: Adiciona um novo nó
+- `remove(self, element)`: Remove um nó
+- `is_empty(self)`: Verifica se a lista encadeada está vazia
+- `get_all(self)`: Retorna todos os nós da lista
+- `get(self, element)`: Busca um nó existente na lista
+
+---
+
+## Classe Product {auto-animate="true"}
+
+```python
+class Product:
+
+    def __init__(self, id, name, category, quantity, price):
+        self.id = id
+        self.name = name
+        self.category = category
+        self.quantity = quantity
+        self.price = price
+```
+
+## Classe Product {auto-animate=true}
+
+```python
+class Product:
+
+    def __init__(self, id, name, category, quantity, price):
+        self.id = id
+        self.name = name
+        self.category = category
+        self.quantity = quantity
+        self.price = price
+
+    def __str__(self) -> str:
+        return f'Product:[id={self.id}, name={self.name}, category={self.category}, quantity={self.quantity}, price={self.price}]'
+```
+Método mágico `__str__`: Quando a classe product for chamada em uma função print, ela retornará todas as informações do produto.
+
+---
+
+## Classe Stock
+
+```python
+class Estoque:
+    def __init__(self):
+        self.head = None
+
+    def adicionar_produto(self, produto):
+        # Implementação da adição de produto
+
+    def remover_produto(self, id):
+        # Implementação da remoção de produto
+
+    def atualizar_produto(self, id, nova_quantidade):
+        # Implementação da atualização de produto
+
+    def listar_produtos(self):
+        # Implementação da listagem de produtos
+```
+
+---
+
+## Demonstração do Código
+
+- Mostrar o arquivo-fonte do programa
+- Executar na IDE preferida
+- Demonstrar todas as funcionalidades implementadas
+
+---
+
+## Desafios Enfrentados
+
+- Implementação correta da lista encadeada
+- Trabalho colaborativo usando github através de pull requests
+- Tratamento de erros e exceções com a função get_action()
+- Alocação dinâmica do ID dos produtos registrados
+- Escolha de trabalhar com busca por produtos em lista ao invés de dicionários devido à necessidade da velocidade de leitura do projeto (big(O))
+
+---
+
+### Implementação correta da lista encadeada
+
+Implementamos da seguinte maneira
+<!--- Colocar imagem aqui --> 
+
+---
+
+## Soluções Adotadas
+
+- Estudo aprofundado sobre listas encadeadas
+- Criação de um sistema de gerenciamento de estoque com funções básicas
+- Implementação de try/except para tratamento de erros
+
+---
+
+## Conclusão
+
+- Recapitulação dos objetivos alcançados
+- Aprendizados obtidos durante o desenvolvimento
+- Possíveis melhorias futuras
+
+---
+
+## Perguntas?
+
+Obrigado pela atenção!
