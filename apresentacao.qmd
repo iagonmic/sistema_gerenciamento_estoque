@@ -40,11 +40,11 @@ format:
 - **Funções**: Para modularizar o código e melhorar a legibilidade
 - **Classes**: Para representar produtos e o estoque
 - **Listas Encadeadas**: Para armazenar os produtos de forma dinâmica
-- **Recursão**: Para otimizar o código na escrita das funções
+- **Recursão**: Para otimizar o código das funções
 
 ---
 
-## Organização do projeto
+## Organização do projeto {auto-animate=true .scrollable}
 
 O projeto foi organizado nos seguintes arquivos:
 
@@ -53,6 +53,74 @@ O projeto foi organizado nos seguintes arquivos:
 - `estoque.py`: Guarda a principal funcionalidade do sistema, a classe Stock
 - `main.py`: É o coração do sistema de gerenciamento de estoque, que é mostrado ao usuário
 
+. . .
+
+### Criamos um [guia](guia.pdf), contendo as principais missões de cada membro da equipe
+
+:::{.nonincremental}
+
+```Markdown
+1. `adicionar_produto()` (cauã)
+2. `remover_produto()` (cauã)
+3. `atualizar_produto()` (hertz)
+4. `listar_produtos()` (iago)
+5. `buscar_produto()` (iago)
+6. `buscar_por_categoria(categoria)` (hertz) --> Busca mais complexa e específica.
+7. `ordenar_por_quantidade()` (iago) --> Ordena a lista de produtos por quantidade (do menor para o maior).
+8. `get_action(string)` (cauã)
+9. `main()`(cauã)
+```
+
+- Utilizamos o [GitHub](https://github.com/iagonmic/sistema_gerenciamento_estoque.git) para versionamento de código
+
+```Markdown
+# Controle de Versão com GitHub
+
+## Configuração Inicial
+
+Clone o repositório localmente:
+   
+   git clone (link_do_repositório) --> O link ainda será enviado no grupo do whatsapp do projeto pois o repositório ainda não foi criado.
+   
+
+## Fluxo de Trabalho
+
+1. Criar uma branch para cada nova feature:
+
+   git checkout -b feature/adicionar-produto
+
+
+2. Fazer commits frequentes com mensagens descritivas:
+
+   git commit -m "Implementa função de adicionar produto"
+
+
+3. Fazer um push para o GitHub:
+
+   git push origin feature/adicionar-produto
+
+
+4. Abrir um Pull Request para revisão do código
+
+## Documentação de Erros
+
+1. Usar as Issues do GitHub para rastrear erros
+2. Ao encontrar um bug:
+   - Criar uma nova Issue descrevendo o problema
+   - Adicionar labels relevantes (ex: "bug", "high-priority")
+   - Atribuir a um membro da equipe, ou você mesmo caso seja o responsável
+
+3. Ao resolver um bug:
+   - Referenciar o número da Issue no commit:
+
+     git commit -m "Corrige erro na atualização de quantidade (#42)"
+
+   - Fechar a Issue através do Pull Request ou manualmente
+```
+
+- Foi utilizado também a linguagem Quarto (.qmd) junto de seu plugin no VS Code para produção dos slides e do guia.
+
+:::
 
 # Principais classes utilizadas:
 
@@ -74,9 +142,12 @@ class Node:
         self.element = element
         self.next = None
 ```
+. . .
 
+:::{.nonincremental}
 - Representa um nó em uma lista encadeada
 - Cada nó contém um dado (element) e uma referência (next) para o próximo nó na lista
+:::
 
 ---
 
@@ -224,30 +295,159 @@ Método mágico `__str__`: Quando a classe product for chamada em uma função p
 ## Classe Stock
 
 ```python
-class Estoque:
+from linkedlist import LinkedList
+from produto import Product
+
+class Stock:
+
     def __init__(self):
-        self.head = None
+        self.stock = LinkedList()
+        self.current_id = 0
+        self.update_actions = [
+            { 
+                "action": "1",
+                "description": "Alterar o nome do produto.", 
+                "function": lambda product, new_value: setattr(product, 'name', new_value)
+            },
+            { 
+                "action": "2", 
+                "description": "Alterar a categoria do produto.", 
+                "function": lambda product, new_value: setattr(product, 'category', new_value)
+            },
+            { 
+                "action": "3", 
+                "description": "Alterar a quantidade do produto.", 
+                "function": lambda product, new_value: setattr(product, 'quantity', int(new_value))
+            },
+            { 
+                "action": "4", 
+                "description": "Alterar o preço do produto.", 
+                "function": lambda product, new_value: setattr(product, 'price', float(new_value))
+            }
+        ]
 
-    def adicionar_produto(self, produto):
-        # Implementação da adição de produto
+    # Gerando ID novo a cada criação
+    def generate_id(self):
+        self.current_id += 1
 
-    def remover_produto(self, id):
-        # Implementação da remoção de produto
+        return self.current_id
 
-    def atualizar_produto(self, id, nova_quantidade):
-        # Implementação da atualização de produto
+    #
+    # Get product if exists, else return None
+    #
+    def get_product(self, id):
 
-    def listar_produtos(self):
-        # Implementação da listagem de produtos
+        ## Get all existent products in stock
+        all_products = self.stock.get_all()
+
+        ## Find existent product in stock by ID
+        for product in all_products:
+            if id == product.id:
+                return product
+            
+        return None
+
+    def add_product(self, name, category, quantity, price):
+        id = self.generate_id()
+        new_product = Product(id, name, category, quantity, price)
+
+        self.stock.add(new_product)
+        print(f"Produto {name} adicionado com sucesso.")
+
+    def remove_product(self, id):
+        product = self.get_product(id)
+
+        if product is None:
+            print("Produto não encontrado.")
+            return
+        
+        self.stock.remove(product)
+        print(f"Produto '{product.name}' removido com sucesso.")
+
+    def update_product(self, id):
+        product = self.get_product(id)
+        if product is None:
+            return
+        
+        for action in self.update_actions:
+            print(f"{action['action']}: {action['description']}")
+        
+        action_command = input("Insira o número de qual campo acima você quer alterar: ")
+        
+        action_object = None
+        for action in self.update_actions:
+            if action['action'] == action_command:
+                action_object = action
+        
+        if action_object is None:
+            print(f"Você inseriu uma ação inválida.")
+            self.update_product(id)
+            return
+
+        new_value = input("Insira o novo valor para o campo informado: ")
+        action_object['function'](product, new_value)
+
+
+    # Get product if exists by name, else return none
+    def get_product_by_name(self, name):
+        all_products = self.stock.get_all()
+        transformed_name = name.strip().lower()
+
+        for product in all_products:
+            if transformed_name == product.name:
+                return product
+        
+        return None
+
+    def get_products_by_category(self, category): # TODO
+        products = []
+
+        all_products = self.stock.get_all()
+        transformed_category = category.strip().lower()
+
+        for product in all_products:
+            if transformed_category == product.category:
+                products.append(product)
+        
+        return products
+
+    #
+    # Get all products from stock
+    #
+    def get_all_products(self): 
+        return self.stock.get_all()
+
+    #
+    # Order by quantity from highest to lowest if stock is not empty
+    #
+    def order_by_quantity(self):
+
+        if self.stock.is_empty():
+            return None
+
+        ## Get all existent produts in stock
+        all_products = self.stock.get_all()
+
+        ## Initialize ordered list
+        ordered_list = []
+
+        ## Search in all of the products list and return
+        for i in range(len(all_products)):
+            highest = None
+
+            for product in all_products:
+                if highest == None or product.quantity >= highest.quantity:
+                    highest = product
+                
+            ordered_list.append(highest)
+            all_products.remove(highest)
+
+        return ordered_list
 ```
 
----
+É a maior classe, contendo as funções principais do programa
 
-## Demonstração do Código
-
-- Mostrar o arquivo-fonte do programa
-- Executar na IDE preferida
-- Demonstrar todas as funcionalidades implementadas
+# Demonstração do Código
 
 ---
 
@@ -258,13 +458,6 @@ class Estoque:
 - Tratamento de erros e exceções com a função get_action()
 - Alocação dinâmica do ID dos produtos registrados
 - Escolha de trabalhar com busca por produtos em lista ao invés de dicionários devido à necessidade da velocidade de leitura do projeto (big(O))
-
----
-
-### Implementação correta da lista encadeada
-
-Implementamos da seguinte maneira
-<!--- Colocar imagem aqui --> 
 
 ---
 
