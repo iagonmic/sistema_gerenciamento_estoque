@@ -15,8 +15,8 @@ format:
 
 # Introdução
 
-- Tema do projeto: Sistema de Gerenciamento de Estoque
-- Implementado em Python
+- **Tema do projeto:** Sistema de Gerenciamento de Estoque
+- Implementado em *Python*
 - Utiliza funções, classes, listas encadeadas e recursão
 
 ---
@@ -28,7 +28,7 @@ format:
 ## Objetivos do Projeto {auto-animate=true}
 
 :::{.nonincremental}
-- Criar um sistema eficiente para gerenciar estoque 
+- Criar um **sistema eficiente** para gerenciar estoque 
 - Implementar operações básicas: adicionar, remover, atualizar e listar produtos
 - Utilizar estruturas de dados avançadas (listas encadeadas) para armazenamento
 :::
@@ -44,20 +44,18 @@ format:
 
 ---
 
-## Organização do projeto {auto-animate=true .scrollable}
+## Organização do projeto {auto-animate=true .scrollable .smaller}
 
-O projeto foi organizado nos seguintes arquivos:
+- O projeto foi organizado nos seguintes arquivos:
 
-- `linkedlist.py`: Guarda o funcionamento da lista encadeada
-- `produto.py`: Guarda a classe Product, responsável pelas informações dos produtos
-- `estoque.py`: Guarda a principal funcionalidade do sistema, a classe Stock
-- `main.py`: É o coração do sistema de gerenciamento de estoque, que é mostrado ao usuário
+  - `linkedlist.py`: Guarda o funcionamento da lista encadeada
+  - `produto.py`: Guarda a classe Product, responsável pelas informações dos produtos
+  - `estoque.py`: Guarda a principal funcionalidade do sistema, a classe Stock
+  - `main.py`: É o coração do sistema de gerenciamento de estoque, que é mostrado ao usuário
+
+- Criamos um [guia](guia.pdf), contendo as principais missões de cada membro da equipe
 
 . . .
-
-### Criamos um [guia](guia.pdf), contendo as principais missões de cada membro da equipe
-
-:::{.nonincremental}
 
 ```Markdown
 1. `adicionar_produto()` (cauã)
@@ -72,6 +70,8 @@ O projeto foi organizado nos seguintes arquivos:
 ```
 
 - Utilizamos o [GitHub](https://github.com/iagonmic/sistema_gerenciamento_estoque.git) para versionamento de código
+
+. . .
 
 ```Markdown
 # Controle de Versão com GitHub
@@ -118,9 +118,7 @@ Clone o repositório localmente:
    - Fechar a Issue através do Pull Request ou manualmente
 ```
 
-- Foi utilizado também a linguagem Quarto (.qmd) junto de seu plugin no VS Code para produção dos slides e do guia.
-
-:::
+- Além disso, foi utilizado também a linguagem Quarto (.qmd) junto de seu plugin no VS Code para produção dos slides e do guia.
 
 # Principais classes utilizadas:
 
@@ -146,7 +144,7 @@ class Node:
 
 :::{.nonincremental}
 - Representa um nó em uma lista encadeada
-- Cada nó contém um dado (element) e uma referência (next) para o próximo nó na lista
+- Cada nó contém um dado `self.element` e uma referência `self.next` para o próximo nó na lista
 :::
 
 ---
@@ -293,6 +291,8 @@ Método mágico `__str__`: Quando a classe product for chamada em uma função p
 ---
 
 ## Classe Stock
+
+É a maior classe, contendo as funções principais do projeto
 
 ```python
 from linkedlist import LinkedList
@@ -445,38 +445,214 @@ class Stock:
         return ordered_list
 ```
 
-É a maior classe, contendo as funções principais do programa
-
 # Demonstração do Código
 
 ---
 
-## Desafios Enfrentados
+## Desafios Enfrentados e Soluções Adotadas {auto-animate=true}
 
-- Implementação correta da lista encadeada
-- Trabalho colaborativo usando github através de pull requests
-- Tratamento de erros e exceções com a função get_action()
-- Alocação dinâmica do ID dos produtos registrados
-- Escolha de trabalhar com busca por produtos em lista ao invés de dicionários devido à necessidade da velocidade de leitura do projeto (big(O))
+Implementação correta da lista encadeada através das classes `Stock` e `LinkedList`, onde a classe `Stock` utiliza dos métodos da `LinkedList` para funcionar, além da classe `Product`
+  
+```python
+class Stock:
+
+    from linkedlist import LinkedList
+    from produto import Product
+```
+
+## Desafios Enfrentados e Soluções Adotadas {auto-animate=true .scrollable}
+
+Trabalho colaborativo usando `github` através de pull requests
+![](print_github.png)
+
+## Desafios Enfrentados e Soluções Adotadas {auto-animate=true .smaller}
+
+Tratamento de erros e exceções com a função `get_product_by_name()` e `get_product_by_category()` na classe `Stock`
+
+```python
+    # Get product if exists by name
+    def get_product_by_name(self, name):
+        all_products = self.stock.get_all()
+        transformed_name = name.strip().lower()
+
+        for product in all_products:
+            if transformed_name == product.name:
+                return product
+        
+        return None
+    
+    # Get list of products if exists by category
+    def get_products_by_category(self, category):
+        products = []
+
+        all_products = self.stock.get_all()
+        transformed_category = category.strip().lower()
+
+        for product in all_products:
+            if transformed_category == product.category:
+                products.append(product)
+        
+        return products
+```
+
+## Desafios Enfrentados e Soluções Adotadas {auto-animate=true .smaller .scrollable}
+
+Tratamento de erros e exceções com a função `get_product_by_name()` e `get_product_by_category()` na classe `Stock`
+
+Exemplo: o usuário pode inserir o nome "CaChoRRO". Se tiver apenas um item escrito "cachorro", ele não vai encontrar, pois precisa digitar exatamente como está, com letras minúsculas e sem espaços.
+
+Porém, ao adicionarmos o `.strip()` (remove espaços) e o `.lower()` (deixa todas as letras minúsculas), que são métodos de string, resolvemos esse problema, e o usuário pode encontrar o que deseja.
+
+```{.python code-line-numbers="4,17"}
+    # Get product if exists by name
+    def get_product_by_name(self, name):
+        all_products = self.stock.get_all()
+        transformed_name = name.strip().lower()
+
+        for product in all_products:
+            if transformed_name == product.name:
+                return product
+        
+        return None
+    
+    # Get list of products if exists by category
+    def get_products_by_category(self, category):
+        products = []
+
+        all_products = self.stock.get_all()
+        transformed_category = category.strip().lower()
+
+        for product in all_products:
+            if transformed_category == product.category:
+                products.append(product)
+        
+        return products
+```
+
+
+
+## Desafios Enfrentados e Soluções Adotadas {auto-animate=true .smaller}
+
+**Alocação dinâmica do ID dos produtos registrados:**
+
+Através da função `generate_id()`, conseguimos gerar dinamicamente o ID dos novos produtos, evitando que seja necessário inserir o ID na hora de cadastrar um novo produto no estoque
+
+```python
+class Stock:
+
+    # Gerando ID novo a cada criação
+    def generate_id(self):
+        self.current_id += 1
+
+        return self.current_id
+
+    # Adicionar um produto
+    def add_product(self, name, category, quantity, price):
+        id = self.generate_id()
+        new_product = Product(id, name, category, quantity, price)
+
+        self.stock.add(new_product)
+        print(f"Produto {name} adicionado com sucesso.")
+```
+
+## Desafios Enfrentados e Soluções Adotadas {auto-animate=true .smaller .scrollable}
+
+Escolha de trabalhar com atualização por produtos em dicionários ao invés de listas devido a possibilidade do uso de BIG DATA (grandes quantidades de dados)
+
+Nesse caso, registramos a ação `self.update_actions` dentro do `init`
+
+```{.python code-line-numbers="1-10,38,39,40"}
+def main():
+    stock = Stock()
+
+    while True:
+        action = input(
+            "Digite 1 - para adicionar, remover ou atualizar produtos,\n"
+            "Digite 2 - para buscar produto, por categoria, por quantidade,\n"
+            "Digite 3 - para listar os produtos,\n"
+            "Digite Q - para sair."
+            ).upper()
+
+        print("-" * 60)
+
+        if action == "1":
+            while True:
+                subaction = input(
+                    "Digite 1 - para adicionar um produto,\n"
+                    "Digite 2 - para remover um produto,\n"
+                    "Digite 3 - para atualizar um produto,\n"
+                    "Digite Q - para sair."
+                    ).upper()
+                
+                print("-" * 60)
+            
+                if subaction == "1":    
+                    name = input("Digite o nome do produto: ")
+                    category = input("Digite a categoria do produto: ")
+                    quantity = int(input("Digite a quantidade do produto: "))
+                    price = float(input("Digite o preço do produto: "))
+                    stock.add_product(name, category, quantity, price)
+                    print("-" * 60)
+
+                elif subaction == "2":
+                    id = int(input("Digite o ID do produto a ser removido: "))
+                    stock.remove_product(id)
+                    print("-" * 60)
+
+                elif subaction == "3":
+                    product_id = int(input("Digite o id do produto a ser atualizado: "))
+                    stock.update_product(product_id)
+
+                elif subaction == "Q":
+                    break
+
+                else:
+                    print("Ação inválida.")
+```
+
+```{.python code-line-numbers="1-3,6-27"}
+class Stock:
+
+    def __init__(self):
+        self.stock = LinkedList()
+        self.current_id = 0
+        self.update_actions = [
+            { 
+                "action": "1",
+                "description": "Alterar o nome do produto.", 
+                "function": lambda product, new_value: setattr(product, 'name', new_value)
+            },
+            { 
+                "action": "2", 
+                "description": "Alterar a categoria do produto.", 
+                "function": lambda product, new_value: setattr(product, 'category', new_value)
+            },
+            { 
+                "action": "3", 
+                "description": "Alterar a quantidade do produto.", 
+                "function": lambda product, new_value: setattr(product, 'quantity', int(new_value))
+            },
+            { 
+                "action": "4", 
+                "description": "Alterar o preço do produto.", 
+                "function": lambda product, new_value: setattr(product, 'price', float(new_value))
+            }
+        ]
+```
+
+# Conclusão {.smaller}
+
+- Conseguimos alcançar criar um sistema de gerenciamento de estoque com funções básicas
+- Aprendemos a trabalhar de maneira colaborativa para a construção do projeto
+- **Melhorias futuras:**
+  - É possível incrementar funções que retornem uma lista de produtos ao invés de um produto apenas, como na função `get_product()` da classe `Stock`
+  - Além disso, é possível realizar a criação de um front-end mais robusto, como a hospedagem em um site, junto de um sistema de usuários
+  - Podemos também realizar a implementação de um banco de dados para os produtos do estoque, usando um arquivo básico como uma planilha do excel ou um arquivo .csv, podendo no futuro mudar para a linguagem SQL
 
 ---
 
-## Soluções Adotadas
-
-- Estudo aprofundado sobre listas encadeadas
-- Criação de um sistema de gerenciamento de estoque com funções básicas
-- Implementação de try/except para tratamento de erros
-
----
-
-## Conclusão
-
-- Recapitulação dos objetivos alcançados
-- Aprendizados obtidos durante o desenvolvimento
-- Possíveis melhorias futuras
-
----
-
-## Perguntas?
-
+## Perguntas ? {.nostretch}
 Obrigado pela atenção!
+
+![](cachorro.png){width=375px}
+

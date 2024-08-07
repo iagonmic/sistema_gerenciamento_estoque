@@ -91,7 +91,7 @@ class Stock:
         action_object['function'](product, new_value)
 
 
-    # Get product if exists by name, else return none
+    # Get product if exists by name
     def get_product_by_name(self, name):
         all_products = self.stock.get_all()
         transformed_name = name.strip().lower()
@@ -101,8 +101,9 @@ class Stock:
                 return product
         
         return None
-
-    def get_products_by_category(self, category): # TODO
+    
+    # Get list of products if exists by category
+    def get_products_by_category(self, category):
         products = []
 
         all_products = self.stock.get_all()

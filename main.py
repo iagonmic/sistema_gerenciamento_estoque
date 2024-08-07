@@ -40,7 +40,6 @@ def main():
                 elif subaction == "3":
                     product_id = int(input("Digite o id do produto a ser atualizado: "))
                     stock.update_product(product_id)
-                    # TODO
 
                 elif subaction == "Q":
                     break
@@ -58,7 +57,7 @@ def main():
                 
                 print("-" * 60)
                 
-                if subaction == "1": # TODO
+                if subaction == "1":
                     product_name = input("Digite o nome do produto a ser encontrado: ")
                     product = stock.get_product_by_name(product_name)
                     if product:
@@ -68,7 +67,7 @@ def main():
                     else:
                         print("Nenhum produto encontrado.")
 
-                elif subaction == "2": # TODO
+                elif subaction == "2":
                     product_category = input("Digite a categoria do produto a ser encontrado: ")
                     products = stock.get_products_by_category(product_category)
                     if not products:
