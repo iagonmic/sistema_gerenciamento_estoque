@@ -454,10 +454,10 @@ class Stock:
 Implementação correta da lista encadeada através das classes `Stock` e `LinkedList`, onde a classe `Stock` utiliza dos métodos da `LinkedList` para funcionar, além da classe `Product`
   
 ```python
-class Stock:
+from linkedlist import LinkedList
+from produto import Product
 
-    from linkedlist import LinkedList
-    from produto import Product
+class Stock:
 ```
 
 ## Desafios Enfrentados e Soluções Adotadas {auto-animate=true .scrollable}
@@ -642,7 +642,7 @@ class Stock:
 
 # Conclusão {.smaller}
 
-- Conseguimos alcançar criar um sistema de gerenciamento de estoque com funções básicas
+- Conseguimos criar um sistema de gerenciamento de estoque com funções básicas
 - Aprendemos a trabalhar de maneira colaborativa para a construção do projeto
 - **Melhorias futuras:**
   - É possível incrementar funções que retornem uma lista de produtos ao invés de um produto apenas, como na função `get_product()` da classe `Stock`
