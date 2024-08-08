@@ -11,6 +11,7 @@ format:
     slide-number: true
     preview-links: auto
     incremental: true
+    embed-resources: true
 ---
 
 # Introdução
@@ -399,7 +400,7 @@ class Stock:
         
         return None
 
-    def get_products_by_category(self, category): # TODO
+    def get_products_by_category(self, category):
         products = []
 
         all_products = self.stock.get_all()
