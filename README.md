@@ -1,170 +1,35 @@
-# Introdução
+# **Representação dos Produtos e Relacionamentos**
+   - **Classe Produto:** Crie uma classe `Produto` para representar os produtos no estoque. Essa classe pode conter atributos como `id`, `nome`, `categoria`, `quantidade`, etc.
+   - **Grafo para Produtos:** Use uma estrutura de grafo para modelar as relações entre os produtos. Em Python, você pode usar bibliotecas como **NetworkX** ou criar sua própria classe para representar o grafo.
+     - Se optar por usar NetworkX, você pode criar um grafo não direcionado (`nx.Graph()`) onde cada nó representa um produto.
 
-Este guia orienta a implementação do Sistema de Gerenciamento de Estoque, abordando desenvolvimento, documentação e controle de versão.
+# **Tabela Hash para Acesso Rápido**
+   - **Dicionário Python:** Utilize um dicionário Python para a tabela hash, onde a chave pode ser o identificador único do produto (como um código ou ID), e o valor será uma instância do objeto `Produto` ou uma referência ao nó correspondente no grafo.
+   - **Busca Eficiente:** O dicionário permitirá que você localize rapidamente um produto pelo seu ID, o que facilita a navegação entre os produtos e suas relações no grafo.
 
-# Estrutura do Projeto
+# **Construção e Atualização do Grafo**
+   - **Adição de Nós:** Para cada produto no estoque, adicione um nó ao grafo.
+   - **Adição de Arestas:** Cada vez que dois produtos forem comprados juntos, adicione ou incremente uma aresta entre esses dois nós. 
+     - **Pesos das Arestas:** Armazene a frequência com que os produtos são comprados juntos como o peso da aresta. Isso pode ser feito incrementando o peso a cada nova compra conjunta.
 
-1. Classe `Produto`
-2. Classe `Estoque` (utilizando lista encadeada)
-3. Classe `LinkedList`
-4. Funções de gerenciamento (adicionar, remover, atualizar, listar)
+# **Algoritmos de Agrupamento e Análise**
+   - **Clustering:** Utilize algoritmos de agrupamento (por exemplo, o algoritmo de Louvain na biblioteca NetworkX) para detectar comunidades de produtos relacionados no grafo. Essas comunidades podem ser usadas para sugestões de produtos.
+   - **Centralidade e Hubs:** Calcule a centralidade dos nós (usando, por exemplo, o grau de centralidade) para identificar produtos que atuam como hubs, ou seja, aqueles frequentemente comprados com muitos outros produtos.
 
-# Implementação
+# **Sugestões de Produtos**
+   - **Busca no Grafo:** Quando um cliente seleciona um produto, use o grafo para buscar produtos conectados por arestas de alto peso. Isso pode ser feito acessando o nó correspondente (usando a tabela hash) e, em seguida, explorando suas conexões no grafo.
+   - **Ordenação:** Ordene as sugestões com base no peso das arestas para apresentar os produtos mais relevantes.
 
-Todas as funcionalidades abaixo serão implementadas em `main.py` visando alcançar o número mínimo de linhas pedidas pela professora.
+# **Manutenção e Atualização Contínua**
+   - **Atualização de Relações:** Sempre que uma nova compra é feita, atualize o grafo incrementando o peso das arestas correspondentes ou criando novas arestas se os produtos nunca foram comprados juntos antes.
+   - **Sincronização com Tabela Hash:** Certifique-se de que a tabela hash e o grafo estejam sempre sincronizados. Por exemplo, ao adicionar um novo produto, ele deve ser incluído tanto no dicionário quanto no grafo.
 
-## Funcionalidades
+# **Exemplo de Fluxo de Implementação**
+   - **Inicialização:** No início, você poderia carregar os produtos e relações iniciais (por exemplo, a partir de um banco de dados ou arquivo) para popular o grafo e a tabela hash.
+   - **Interação com Usuários:** Quando um usuário interagir com o sistema (por exemplo, adicionando um produto ao carrinho), o sistema pode consultar a tabela hash para localizar o produto, usar o grafo para identificar relações relevantes, e sugerir produtos adicionais com base nessas relações.
 
-### Classe Produto (hertz)
+# **Manutenção e Escalabilidade**
+   - **Persistência:** Considere como você vai persistir o grafo e a tabela hash entre sessões. Você pode serializar essas estruturas usando `pickle` ou outra forma de armazenamento.
+   - **Escalabilidade:** Para grandes volumes de dados, avalie a eficiência do grafo. Pode ser necessário otimizar as operações ou considerar técnicas como grafos dispersos.
 
-### Classe Estoque (hertz)
-
-### Classe LinkedList (hertz)
-
-### Funções Principais
-
-1. `adicionar_produto()` (cauã)
-2. `remover_produto()` (cauã)
-3. `atualizar_produto()` (hertz)
-4. `listar_produtos()` (iago)
-5. `buscar_produto()` (iago)
-6. `buscar_por_categoria(categoria)` (hertz) --> Busca mais complexa e específica.
-7. `ordenar_por_quantidade()` (iago) --> Ordena a lista de produtos por quantidade (do maior para o menor).
-8. `get_action(string)` (cauã)
-9. `main()`(cauã)
-
-### Ciclo while True
-
-Implementar while True na função main(), com opções a serem escolhidas abordando cada uma das funções implementadas, e uma opção para quebrar o ciclo, como o número "0" por exemplo.
-
-Lembrar-se de incluir:
-
-```python
-if __name__ == '__main__':
-    main()
-```
-
-## Responsabilidade de implementação do projeto pelos membros
-
-A responsabilidade de cada um ainda foi definida através de uma chamada via discord.
-
-# Boas Práticas
-
-## Comentários no Código
-
-Usar comentários para explicar a lógica complexa e docstrings para funções e classes.
-
-Exemplo:
-
-```python
-def buscar_produto(self, id):
-    """
-    Busca um produto no estoque pelo ID.
-
-    Args:
-        id (int): O ID do produto a ser buscado.
-
-    Returns:
-        Produto: O produto encontrado ou None se não existir.
-    """
-    # Implementação da busca
-```
-
-## Tratamento de Erros
-
-Usar blocos try/except para lidar com possíveis erros:
-
-```python
-try:
-    produto = estoque.buscar_produto(id)
-    if produto:
-        print(f"Produto encontrado: {produto.nome}")
-    else:
-        print("Produto não encontrado.")
-except Exception:
-    print(f"Erro ao buscar produto.")
-```
-
-# Controle de Versão com GitHub
-
-## Configuração Inicial
-
-Clone o repositório localmente:
-   ```
-   git clone https://github.com/iagonmic/sistema_gerenciamento_estoque.git
-   ```
-
-## Fluxo de Trabalho
-
-1. Criar uma branch para cada nova feature:
-   ```
-   git checkout -b feature/adicionar-produto
-   ```
-
-2. Fazer commits frequentes com mensagens descritivas:
-   ```
-   git commit -m "Implementa função de adicionar produto"
-   ```
-
-3. Fazer um push para o GitHub:
-   ```
-   git push origin feature/adicionar-produto
-   ```
-
-4. Abrir um Pull Request para revisão do código
-
-## Documentação de Erros
-
-1. Usar as Issues do GitHub para rastrear erros
-2. Ao encontrar um bug:
-   - Criar uma nova Issue descrevendo o problema
-   - Adicionar labels relevantes (ex: "bug", "high-priority")
-   - Atribuir a um membro da equipe, ou você mesmo caso seja o responsável
-
-3. Ao resolver um bug:
-   - Referenciar o número da Issue no commit:
-     ```
-     git commit -m "Corrige erro na atualização de quantidade (#42)"
-     ```
-   - Fechar a Issue através do Pull Request ou manualmente
-  
-
-# Apresentação
-
-## Estrutura da apresentação
-
-A apresentação será feita de acordo com a seguinte ordem:
-
-1. Introdução
-2. Objetivos do Projeto
-3. Estruturas Utilizadas
-4. Demonstração das Classes Produto e Estoque
-5. Funções Principais
-6. Demonstração do Código Rodando na IDE
-7. Mostrar os desafios enfrentados
-8. Soluções adotadas pelo projeto
-9. Conclusão e Perguntas
-
-## Falas dos membros
-
-Atenção: As seguintes falas servem de guia para o que será falado. Fique a vontade para incrementar mais coisas de acordo com o seu entendimento do projeto.
-
-### Iago Flávio
-
-(A ser definido)
-
-### Hertz Rafael
-
-(A ser definido)
-
-### Cauã Wendel
-
-(A ser definido)
-
-## Ordem das falas
-
-A ordem das falas ainda será definida de acordo com a implementação do projeto por parte de cada um.
-
-# Conclusão
-
-Seguindo estas diretrizes, será desenvolvido um Sistema de Gerenciamento de Estoque com funções básicas bem documentado. Lembrar-se de comunicar regularmente, fazer commits frequentes e manter a documentação atualizada.
+Essa abordagem modular permitirá o desenvolvimento de um sistema de gerenciamento de estoque robusto e eficiente, utilizando grafos para capturar relações complexas entre produtos e tabelas hash para um acesso rápido e direto aos dados.
