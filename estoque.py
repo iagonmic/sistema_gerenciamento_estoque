@@ -1,10 +1,9 @@
-from linkedlist import LinkedList
 from produto import Product
 
 class Stock:
 
     def __init__(self):
-        self.stock = LinkedList()
+        self.stock = {}
         self.current_id = 0
         self.update_actions = [
             { 
