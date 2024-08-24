@@ -3,17 +3,17 @@ class Graph:
     def __init__(self):
         self.structure = {}
 
-    def get_connectors(self, origin):
+    def get_nodes(self, origin):
         if origin in self.structure:
             return self.structure.get(origin)
         
         return []
     
     def add_graph(self, origin, end, ordened: bool):
-        connectors = self.get_connectors(origin)
-        connectors.append(end)
+        nodes = self.get_nodes(origin)
+        nodes.append(end)
         
-        self.structure[origin] = connectors
+        self.structure[origin] = nodes
 
-        if ordened:
-            self.add_graph(end, origin, False)
+        if not ordened:
+            self.add_graph(end, origin, True)
