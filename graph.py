@@ -9,11 +9,11 @@ class Graph:
         
         return []
     
-    def add_graph(self, origin, end, ordened: bool):
+    def add_node(self, origin, end, ordered: bool):
         nodes = self.get_nodes(origin)
         nodes.append(end)
         
         self.structure[origin] = nodes
 
-        if not ordened:
-            self.add_graph(end, origin, True)
+        if not ordered:
+            self.add_node(end, origin, True)
