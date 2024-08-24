@@ -1,0 +1,19 @@
+---
+title: "Sistema de Gerenciamento de Estoque 2.0"
+subtitle: "Atualização com Grafos e Tabelas Hash"
+author:
+    - Iago Flávio
+    - Hertz Rafael
+    - Cauã Wendel
+format:
+  revealjs:
+    theme: dark
+    transition: slide
+    slide-number: true
+    preview-links: auto
+    incremental: true
+    embed-resources: true
+---
+
+# Introdução
+
