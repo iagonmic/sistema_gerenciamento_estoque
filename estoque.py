@@ -1,9 +1,10 @@
 from produto import Product
+from graph import Graph
 
 class Stock:
 
     def __init__(self):
-        self.stock = {}
+        self.stock = Graph()
         self.current_id = 0
         self.update_actions = [
             { 
@@ -37,10 +38,10 @@ class Stock:
     #
     # Get product if exists, else return None
     #
-    def get_product(self, id):
+    def get_product(self, id): 
 
         ## Get all existent products in stock
-        all_products = self.stock.get_all()
+        all_products = self.stock.structure.keys()
 
         ## Find existent product in stock by ID
         for product in all_products:
@@ -68,6 +69,7 @@ class Stock:
 
     def update_product(self, id):
         product = self.get_product(id)
+
         if product is None:
             return
         
@@ -89,6 +91,14 @@ class Stock:
         new_value = input("Insira o novo valor para o campo informado: ")
         action_object['function'](product, new_value)
 
+        # --- Graph --- #
+        all_products = self.stock.structure.keys()
+
+        for key in all_products:
+            nodes = self.stock.get_nodes(key)
+            for node in nodes:
+                if node == product:
+                    action_object['function'][node, new_value]
 
     # Get product if exists by name
     def get_product_by_name(self, name):
@@ -105,7 +115,7 @@ class Stock:
     def get_products_by_category(self, category):
         products = []
 
-        all_products = self.stock.get_all()
+        all_products = self.stock.structure.keys()
         transformed_category = category.strip().lower()
 
         for product in all_products:
