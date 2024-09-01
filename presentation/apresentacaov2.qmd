@@ -125,28 +125,9 @@ Clone o repositório localmente:
 # Principais classes utilizadas:
 
 :::{.nonincremental .fragment .fade-right}
-- Node
 - Graph
 - Product
 - Stock
-:::
-
----
-
-## Classe Node
-
-```python
-class Node:
-
-    def __init__(self, element):
-        self.element = element
-        self.next = None
-```
-. . .
-
-:::{.nonincremental}
-- Representa um nó em um grafo
-- Cada nó é um produto do grafo não ordenado, contendo suas arestas que se ligam a todos os outros produtos
 :::
 
 ---
