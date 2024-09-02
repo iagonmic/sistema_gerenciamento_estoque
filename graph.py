@@ -35,5 +35,3 @@ class Graph:
                         node_nodes.remove(origin)
 
                         self.structure[node] = node_nodes
-
-            
