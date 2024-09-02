@@ -38,14 +38,14 @@ class Stock:
     #
     # Get product if exists, else return None
     #
-    def get_product(self, name): 
+    def get_product(self, id): 
 
         ## Get all existent products in stock
         all_products = self.get_all_products()
 
         ## Find existent product in stock by ID
         for product in all_products:
-            if product.name == name:
+            if product.id == id:
                 return product
             
         return None
