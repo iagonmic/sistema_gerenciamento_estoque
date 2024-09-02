@@ -3,6 +3,12 @@ class Graph:
     def __init__(self):
         self.structure = {}
 
+    def get_all_nodes(self):
+        return self.structure.keys()
+    
+    def is_empty(self):
+        return not self.structure
+
     def get_nodes(self, origin):
         if origin in self.structure:
             return self.structure.get(origin)
