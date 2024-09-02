@@ -54,7 +54,14 @@ class Stock:
         id = self.generate_id()
         new_product = Product(id, name, category, quantity, price)
 
-        self.stock.add(new_product)
+        all_products = list(self.get_all_products())
+
+        if not all_products:
+            self.stock.add_node(new_product, new_product)
+        else:
+            for product in all_products:
+                self.stock.add_node(new_product, product)
+
         print(f"Produto {name} adicionado com sucesso.")
 
     def remove_product(self, id):
