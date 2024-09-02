@@ -147,7 +147,6 @@ class Stock:
 
         ## Get all existent produts in stock
         all_products = [element for element in self.get_all_products()]
-        print(all_products)
 
         ## Initialize ordered list
         ordered_list = []

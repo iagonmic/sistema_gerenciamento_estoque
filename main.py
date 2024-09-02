@@ -11,7 +11,7 @@ def main():
             "Digite Q - para sair."
             ).upper()
 
-        print("-" * 60)
+        print("-" * 75)
 
         if action == "1":
             while True:
@@ -22,7 +22,7 @@ def main():
                     "Digite Q - para sair."
                     ).upper()
                 
-                print("-" * 60)
+                print("-" * 75)
             
                 if subaction == "1":    
                     name = input("Digite o nome do produto: ")
@@ -30,12 +30,12 @@ def main():
                     quantity = int(input("Digite a quantidade do produto: "))
                     price = float(input("Digite o preço do produto: "))
                     stock.add_product(name, category, quantity, price)
-                    print("-" * 60)
+                    print("-" * 75)
 
                 elif subaction == "2":
                     id = int(input("Digite o ID do produto a ser removido: "))
                     stock.remove_product(id)
-                    print("-" * 60)
+                    print("-" * 75)
 
                 elif subaction == "3":
                     product_id = int(input("Digite o id do produto a ser atualizado: "))
@@ -55,15 +55,15 @@ def main():
                     "Digite Q - para sair."
                     ).upper()
                 
-                print("-" * 60)
+                print("-" * 75)
                 
                 if subaction == "1":
                     product_name = input("Digite o nome do produto a ser encontrado: ")
                     product = stock.get_product_by_name(product_name)
                     if product:
-                        print("-" * 60)
+                        print("-" * 75)
                         print(f"ID: {product.id}, Nome: {product.name}, Categoria: {product.category}, Quantidade: {product.quantity}, Preço: {product.price}")
-                        print("-" * 60)
+                        print("-" * 75)
                     else:
                         print("Nenhum produto encontrado.")
 
@@ -74,10 +74,10 @@ def main():
                         print("Nenhum produto encontrado.")
                     else:
                         print("Relatório dos produtos")
-                        print("-" * 60)
+                        print("-" * 75)
                         for product in products:
                             print(f"ID: {product.id}, Nome: {product.name}, Categoria: {product.category}, Quantidade: {product.quantity}, Preço: {product.price}")
-                        print("-" * 60)
+                        print("-" * 75)
 
                 elif subaction == "Q":
                     break
@@ -93,7 +93,7 @@ def main():
                             "Digite Q - para sair."
                             ).upper()
                 
-                print("-" * 60)
+                print("-" * 75)
 
                 if subaction == "1":
                     products = stock.get_all_products()
@@ -101,25 +101,26 @@ def main():
                         print("Nenhum produto encontrado.")
                     else:
                         print("Relatório dos produtos")
-                        print("-" * 60)
+                        print("-" * 75)
+                        print(f"|{'ID':<5}|{'Nome':<20}|{'Categoria':<20}|{'Quantidade':<12}|{'Preço':<12}|")
+                        print("-" * 75)
                         for product in products:
-                            print(f"ID: {product.id}, Nome: {product.name}, Categoria: {product.category}, Quantidade: {product.quantity}, Preço: {product.price}")
-                            print("▼")
-                        print("-" * 60)
+                            print(f"|{product.id:<5}|{product.name:<20}|{product.category:<20}|{product.quantity:<12}|{product.price:<12}|")
+                        print("-" * 75)
         
                 elif subaction == "2":
                     ordered_list = stock.order_by_quantity()   
-                    if not products:
+                    if not ordered_list:
                         print("Nenhum produto encontrado.")
                     else:
                         print("Relatório dos produtos ordenados por quantidade")
-                        print("-" * 60)
+                        print("-" * 75)
+                        print(f"|{'ID':<5}|{'Nome':<20}|{'Categoria':<20}|{'Quantidade':<12}|{'Preço':<12}|")
+                        print("-" * 75)
                         for product in ordered_list:
-                            print(f"ID: {product.id}, Nome: {product.name}, Categoria: {product.category}, Quantidade: {product.quantity}, Preço: {product.price}")
-                            print("▼")
-                        print("-" * 60)
-                    pass
-
+                            print(f"|{product.id:<5}|{product.name:<20}|{product.category:<20}|{product.quantity:<12}|{product.price:<12}|")
+                        print("-" * 75)
+                        
                 elif subaction == "Q":
                     break
 
