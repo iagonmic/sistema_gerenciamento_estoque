@@ -38,14 +38,14 @@ class Stock:
     #
     # Get product if exists, else return None
     #
-    def get_product(self, id): 
+    def get_product(self, name): 
 
         ## Get all existent products in stock
-        all_products = self.stock.structure.keys()
+        all_products = self.get_all_products()
 
         ## Find existent product in stock by ID
         for product in all_products:
-            if id == product.id:
+            if product.name == name:
                 return product
             
         return None
@@ -64,7 +64,7 @@ class Stock:
             print("Produto não encontrado.")
             return
         
-        self.stock.remove(product)
+        self.stock.remove_node(product)
         print(f"Produto '{product.name}' removido com sucesso.")
 
     def update_product(self, id):
@@ -92,7 +92,7 @@ class Stock:
         action_object['function'](product, new_value)
 
         # --- Graph --- #
-        all_products = self.stock.structure.keys()
+        all_products = self.get_all_products()
 
         for key in all_products:
             nodes = self.stock.get_nodes(key)
@@ -115,7 +115,7 @@ class Stock:
     def get_products_by_category(self, category):
         products = []
 
-        all_products = self.stock.structure.keys()
+        all_products = self.get_all_products()
         transformed_category = category.strip().lower()
 
         for product in all_products:
@@ -128,7 +128,7 @@ class Stock:
     # Get all products from stock
     #
     def get_all_products(self): 
-        return self.stock.get_all()
+        return self.stock.get_all_nodes()
 
     #
     # Order by quantity from highest to lowest if stock is not empty
@@ -139,7 +139,8 @@ class Stock:
             return None
 
         ## Get all existent produts in stock
-        all_products = self.stock.get_all()
+        all_products = [element for element in self.get_all_products()]
+        print(all_products)
 
         ## Initialize ordered list
         ordered_list = []
@@ -151,7 +152,7 @@ class Stock:
             for product in all_products:
                 if highest == None or product.quantity >= highest.quantity:
                     highest = product
-                
+            
             ordered_list.append(highest)
             all_products.remove(highest)
 
