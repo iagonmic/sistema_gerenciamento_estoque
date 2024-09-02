@@ -104,6 +104,7 @@ def main():
                         print("-" * 60)
                         for product in products:
                             print(f"ID: {product.id}, Nome: {product.name}, Categoria: {product.category}, Quantidade: {product.quantity}, Preço: {product.price}")
+                            print("▼")
                         print("-" * 60)
         
                 elif subaction == "2":
@@ -115,6 +116,7 @@ def main():
                         print("-" * 60)
                         for product in ordered_list:
                             print(f"ID: {product.id}, Nome: {product.name}, Categoria: {product.category}, Quantidade: {product.quantity}, Preço: {product.price}")
+                            print("▼")
                         print("-" * 60)
                     pass
 
