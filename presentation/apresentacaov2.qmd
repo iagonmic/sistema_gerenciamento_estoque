@@ -140,6 +140,12 @@ class Graph:
     def __init__(self):
         self.structure = {}
 
+    def get_all_nodes(self):
+        return self.structure.keys()
+    
+    def is_empty(self):
+        return not self.structure
+
     def get_nodes(self, origin):
         if origin in self.structure:
             return self.structure.get(origin)
@@ -176,30 +182,16 @@ class Graph:
 
 ## Classe Graph {auto-animate=true}
 
-# TODO:
-
 Seus principais métodos são:
 
-- `add(self, element)`: Adiciona um novo nó
-- `remove(self, element)`: Remove um nó
-- `is_empty(self)`: Verifica se a lista encadeada está vazia
-- `get_all(self)`: Retorna todos os nós da lista
-- `get(self, element)`: Busca um nó existente na lista
+- `get_all_nodes()`: Retorna as chaves da tabela hash
+- `get_nodes(origin)`: Retorna as ligações de uma das chaves da tabela hash
+- `is_empty()`: Verifica se a tabela hash e o grafo estão vazios
+- `add_node(origin, end, ordered)`: Adiciona um nó ao grafo, podendo ser ordenado ou não
+- `contains_node(origin)`: Verifica a existência de um nó na tabela hash e no grafo
+- `remove_node(self, origin, ordered)`: Remove um nó do grafo, podendo ser ordenado ou não
 
 ---
-
-## Classe Product {auto-animate="true"}
-
-```python
-class Product:
-
-    def __init__(self, id, name, category, quantity, price):
-        self.id = id
-        self.name = name
-        self.category = category
-        self.quantity = quantity
-        self.price = price
-```
 
 ## Classe Product {auto-animate=true}
 
@@ -218,6 +210,8 @@ class Product:
 ```
 Método mágico `__str__`: Quando a classe product for chamada em uma função print, ela retornará todas as informações do produto.
 
+Aqui não houve alteração em relação a versão 1.0
+
 ---
 
 ## Classe Stock
@@ -225,13 +219,13 @@ Método mágico `__str__`: Quando a classe product for chamada em uma função p
 É a maior classe, contendo as funções principais do projeto
 
 ```python
-from linkedlist import LinkedList
 from produto import Product
+from graph import Graph
 
 class Stock:
 
     def __init__(self):
-        self.stock = LinkedList()
+        self.stock = Graph()
         self.current_id = 0
         self.update_actions = [
             { 
@@ -265,14 +259,14 @@ class Stock:
     #
     # Get product if exists, else return None
     #
-    def get_product(self, id):
+    def get_product(self, id): 
 
         ## Get all existent products in stock
-        all_products = self.stock.get_all()
+        all_products = self.get_all_products()
 
         ## Find existent product in stock by ID
         for product in all_products:
-            if id == product.id:
+            if product.id == id:
                 return product
             
         return None
@@ -281,7 +275,14 @@ class Stock:
         id = self.generate_id()
         new_product = Product(id, name, category, quantity, price)
 
-        self.stock.add(new_product)
+        all_products = list(self.get_all_products())
+
+        if not all_products:
+            self.stock.add_node(new_product, new_product)
+        else:
+            for product in all_products:
+                self.stock.add_node(new_product, product)
+
         print(f"Produto {name} adicionado com sucesso.")
 
     def remove_product(self, id):
@@ -291,11 +292,12 @@ class Stock:
             print("Produto não encontrado.")
             return
         
-        self.stock.remove(product)
+        self.stock.remove_node(product)
         print(f"Produto '{product.name}' removido com sucesso.")
 
     def update_product(self, id):
         product = self.get_product(id)
+
         if product is None:
             return
         
@@ -317,8 +319,16 @@ class Stock:
         new_value = input("Insira o novo valor para o campo informado: ")
         action_object['function'](product, new_value)
 
+        # --- Graph --- #
+        all_products = self.get_all_products()
 
-    # Get product if exists by name, else return none
+        for key in all_products:
+            nodes = self.stock.get_nodes(key)
+            for node in nodes:
+                if node == product:
+                    action_object['function'][node, new_value]
+
+    # Get product if exists by name
     def get_product_by_name(self, name):
         all_products = self.stock.get_all()
         transformed_name = name.strip().lower()
@@ -328,11 +338,12 @@ class Stock:
                 return product
         
         return None
-
+    
+    # Get list of products if exists by category
     def get_products_by_category(self, category):
         products = []
 
-        all_products = self.stock.get_all()
+        all_products = self.get_all_products()
         transformed_category = category.strip().lower()
 
         for product in all_products:
@@ -345,7 +356,7 @@ class Stock:
     # Get all products from stock
     #
     def get_all_products(self): 
-        return self.stock.get_all()
+        return self.stock.get_all_nodes()
 
     #
     # Order by quantity from highest to lowest if stock is not empty
@@ -356,7 +367,7 @@ class Stock:
             return None
 
         ## Get all existent produts in stock
-        all_products = self.stock.get_all()
+        all_products = [element for element in self.get_all_products()]
 
         ## Initialize ordered list
         ordered_list = []
@@ -368,14 +379,12 @@ class Stock:
             for product in all_products:
                 if highest == None or product.quantity >= highest.quantity:
                     highest = product
-                
+            
             ordered_list.append(highest)
             all_products.remove(highest)
 
         return ordered_list
 ```
-
-# Demonstração do Código
 
 ---
 
@@ -425,7 +434,7 @@ Tratamento de erros e exceções com a função `get_product_by_name()` e `get_p
         return products
 ```
 
-## Desafios Enfrentados e Soluções Adotadas {auto-animate=true .scrollable}
+## Desafios Enfrentados na Versão 2.0 {auto-animate=true .scrollable}
 
 Tratamento de erros e exceções com a função `get_product_by_name()` e `get_product_by_category()` na classe `Stock`
 
@@ -480,7 +489,14 @@ class Stock:
         id = self.generate_id()
         new_product = Product(id, name, category, quantity, price)
 
-        self.stock.add(new_product)
+        all_products = list(self.get_all_products())
+
+        if not all_products:
+            self.stock.add_node(new_product, new_product)
+        else:
+            for product in all_products:
+                self.stock.add_node(new_product, product)
+
         print(f"Produto {name} adicionado com sucesso.")
 ```
 
@@ -620,7 +636,4 @@ def update_product(self, id):
 
 ---
 
-## Perguntas ? {.nostretch}
-Obrigado pela atenção!
-
-![](cachorro.png){width=375px}
+# Demonstração do Código
