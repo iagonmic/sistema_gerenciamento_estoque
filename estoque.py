@@ -28,6 +28,23 @@ class Stock:
                 "function": lambda product, new_value: setattr(product, 'price', float(new_value))
             }
         ]
+        self.load_categories()
+
+    def load_categories(self):
+        father = self.product_category
+
+        alimenticios = Category('Alimentícios', father)
+        nao_alimenticios = Category('Não Alimentícios', father)
+
+        FinalCategory('Carnes', alimenticios)
+        FinalCategory('Frutas', alimenticios)
+        FinalCategory('Grãos', alimenticios)
+        FinalCategory('Laticínios', alimenticios)
+
+        FinalCategory('Higiene', nao_alimenticios)
+        FinalCategory('Limpeza', nao_alimenticios)
+        FinalCategory('Beleza', nao_alimenticios)
+        FinalCategory('Utilitários', nao_alimenticios)
 
     # Gerando ID novo a cada criação
     def generate_id(self):
@@ -57,10 +74,6 @@ class Stock:
         return isinstance(category, FinalCategory)
 
     def get_category(self, name):
-
-        if name == self.product_category.name:
-            return self.product_category
-
         return self.product_category.get_category(name, self.product_category)
 
     def add_product(self, name, category_name, quantity, price):
