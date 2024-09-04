@@ -175,3 +175,8 @@ class Stock:
                 products.append(product)
 
         return products
+    
+    def sale():
+        pass
+
+    
