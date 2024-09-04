@@ -28,11 +28,6 @@ class Stock:
                 "description": "Alterar o preço do produto.", 
                 "function": lambda product, new_value: setattr(product, 'price', float(new_value))
             }
-            {
-                "action": "5"
-                "description": "Alterar a quantidade de vendas do produto",
-                "fucntion": lambda product, new_value: setattr(product, 'sales', float(new_value))
-            }
         ]
         self.load_categories()
 

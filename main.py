@@ -1,5 +1,13 @@
 from estoque import Stock
 
+def mensage(products):
+        print("-" * 75)
+        print(f"|{'ID':<5}|{'Nome':<20}|{'Categoria':<20}|{'Quantidade':<12}|{'Preço':<12}|")
+        print("-" * 75)
+        for product in products:
+            print(f"|{product.id:<5}|{product.name:<20}|{product.category.name:<20}|{product.quantity:<12}|{product.price:<12}|")
+        print("-" * 75)
+
 def main():
     stock = Stock()
 
@@ -102,12 +110,7 @@ def main():
                         print("Nenhum produto encontrado.")
                     else:
                         print("Relatório dos produtos")
-                        print("-" * 75)
-                        print(f"|{'ID':<5}|{'Nome':<20}|{'Categoria':<20}|{'Quantidade':<12}|{'Preço':<12}|")
-                        print("-" * 75)
-                        for product in products:
-                            print(f"|{product.id:<5}|{product.name:<20}|{product.category:<20}|{product.quantity:<12}|{product.price:<12}|")
-                        print("-" * 75)
+                        mensage(products)
         
                 elif subaction == "2":
                     ordered_list = stock.order_by_quantity()   
@@ -115,27 +118,18 @@ def main():
                         print("Nenhum produto encontrado.")
                     else:
                         print("Relatório dos produtos ordenados por quantidade")
-                        print("-" * 75)
-                        print(f"|{'ID':<5}|{'Nome':<20}|{'Categoria':<20}|{'Quantidade':<12}|{'Preço':<12}|")
-                        print("-" * 75)
-                        for product in ordered_list:
-                            print(f"|{product.id:<5}|{product.name:<20}|{product.category:<20}|{product.quantity:<12}|{product.price:<12}|")
-                        print("-" * 75)
+                        mensage(ordered_list)
 
                 elif subaction == "3":
                     product_name = input("Digite o nome do produto: ")
-                    ordered_list = stock.get_products_by_price(product)
+                    ordered_list = stock.get_products_by_price(product_name)
                        
                     if not ordered_list:
                         print("Nenhum produto encontrado.")
                     else:
                         print("Relatório dos produtos ordenados por preço")
-                        print("-" * 75)
-                        print(f"|{'ID':<5}|{'Nome':<20}|{'Categoria':<20}|{'Quantidade':<12}|{'Preço':<12}|")
-                        print("-" * 75)
-                        for product in ordered_list:
-                            print(f"|{product.id:<5}|{product.name:<20}|{product.category:<20}|{product.quantity:<12}|{product.price:<12}|")        
-                        
+                        mensage(ordered_list)
+                
                 elif subaction == "Q":
                     break
 
