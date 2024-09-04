@@ -56,6 +56,9 @@ class Stock:
     def can_insert_items(self, category: Category):
         return isinstance(category, FinalCategory)
 
+    def get_category(self, name):
+        return self.product_category.get_category(name, self.product_category)
+
     def add_product(self, name, category_name, quantity, price):
 
         category = self.get_category(category_name)
@@ -205,12 +208,18 @@ nao_alimenticios = Category("não alimenticios", father)
 frutas = FinalCategory("frutas", alimenticios)
 verduras = FinalCategory("verduras", alimenticios)
 
+stock.add_product('uva', frutas.name, 3, 5)
+stock.add_product('pera', frutas, 5, 10)
+
+print(stock.get_all_products())
+
+"""
 uva = Product(1, 'uva', frutas, 3, 5)
 pera = Product(2, 'pera', frutas, 5, 10)
 
-"""
 print(id(nao_alimenticios))
 print("-" * 60)
 found_frutas = stock.get_category('não alimenticios')
 print(id(found_frutas))
-print('Encontrado:', found_frutas)"""
+print('Encontrado:', found_frutas)
+"""
