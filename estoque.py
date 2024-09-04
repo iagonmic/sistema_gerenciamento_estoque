@@ -1,4 +1,3 @@
-from csv import reader
 from produto import Product
 from tree import Category, FinalCategory
 
@@ -46,15 +45,6 @@ class Stock:
         FinalCategory('Limpeza', nao_alimenticios)
         FinalCategory('Beleza', nao_alimenticios)
         FinalCategory('Utilitários', nao_alimenticios)
-
-    def load_products(self, file):
-        with open('example_products.csv', newline = '') as csvfile:
-            csv_reader = reader(file)
-
-            next(csv_reader)
-
-            for row in csv_reader:
-                print(row)
 
     # Gerando ID novo a cada criação
     def generate_id(self):
