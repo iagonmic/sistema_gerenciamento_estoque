@@ -8,4 +8,4 @@ class Product:
         self.price = price
     
     def __str__(self) -> str:
-        return f'Product:[id={self.id}, name={self.name}, category={self.category}, quantity={self.quantity}, price={self.price}]'
+        return f'Product:[id={self.id}, name={self.name}, category={self.category.name}, quantity={self.quantity}, price={self.price}]'

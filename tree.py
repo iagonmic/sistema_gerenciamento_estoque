@@ -11,36 +11,59 @@ class Category:
     def add_subcategory(self, category):
         self.subcategories.append(category)
 
+    def get_category_by_father(self, name, father):
+
+        for category in father.subcategories:
+            if category.name == name:
+                return category
+
+            if not isinstance(category, FinalCategory):
+                found = self.get_category_by_father(name, category)
+                if found != None:
+                    return found
+
+        return None
+    
+    def get_category(self, name, default_father):
+        return self.get_category_by_father(name, default_father)
+    
+    def get_all_final_categories(self):
+        final_categories = []
+
+        for category in self.subcategories:
+            self.__found_final_category__(category, final_categories)
+
+        return final_categories
+    
+    def __found_final_category__(self, father, array):
+
+        for category in father.subcategories:
+            if isinstance(category, FinalCategory):
+                array.append(category)
+                continue
+            
+            self.__found_final_category__(category, array)
+
     def __str__(self):
         return f"Category:[name={self.name}]"
 
-class ProductCategory(Category):
+class FinalCategory(Category):
 
     def __init__(self, name, father=None):
         super().__init__(name, father)
-        self.products = []
+        self.elements = []
 
     def add_subcategory(self):
         pass
 
+    def add_element(self, element):
+        self.elements.append(element)
+
+    def remove_element(self, element):
+        self.elements.remove(element)
+
     def __str__(self):
-        return f'Produtos de {self.name}: {self.products}'
-
-
-def find_product(category, name): # Busca em profundidade (DFS)
-    if isinstance(category, ProductCategory):
-        for product in category.products:
-            if product == name:
-                return product
-            
-        return None
-    
-    for subcategory in category.subcategories:
-        product = find_product(subcategory, name)
-        if product != None:
-            return product
-    
-    return None
+        return f'Produtos de {self.name}: {self.elements}'
 
 
 """
