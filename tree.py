@@ -14,7 +14,7 @@ class Category:
     def get_category_by_father(self, name, father):
 
         for category in father.subcategories:
-            if category.name == name:
+            if category.name.strip().lower() == name:
                 return category
 
             if not isinstance(category, FinalCategory):
@@ -25,7 +25,12 @@ class Category:
         return None
     
     def get_category(self, name, default_father):
-        return self.get_category_by_father(name, default_father)
+        transformed_name = name.strip().lower()
+
+        if transformed_name == default_father.name.strip().lower():
+            return default_father
+
+        return self.get_category_by_father(transformed_name, default_father)
     
     def get_all_final_categories(self):
         final_categories = []
