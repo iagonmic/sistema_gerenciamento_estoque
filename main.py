@@ -90,6 +90,7 @@ def main():
 
                 subaction = input("Digite 1 - para listar produtos,\n"
                             "Digite 2 - para listar produtos por quantidade,\n"
+                            "Digite 3 - para listar produtos por preço,\n"
                             "Digite Q - para sair."
                             ).upper()
                 
@@ -120,6 +121,20 @@ def main():
                         for product in ordered_list:
                             print(f"|{product.id:<5}|{product.name:<20}|{product.category:<20}|{product.quantity:<12}|{product.price:<12}|")
                         print("-" * 75)
+
+                elif subaction == "3":
+                    product_name = input("Digite o nome do produto: ")
+                    ordered_list = stock.get_products_by_price(product)
+                       
+                    if not ordered_list:
+                        print("Nenhum produto encontrado.")
+                    else:
+                        print("Relatório dos produtos ordenados por preço")
+                        print("-" * 75)
+                        print(f"|{'ID':<5}|{'Nome':<20}|{'Categoria':<20}|{'Quantidade':<12}|{'Preço':<12}|")
+                        print("-" * 75)
+                        for product in ordered_list:
+                            print(f"|{product.id:<5}|{product.name:<20}|{product.category:<20}|{product.quantity:<12}|{product.price:<12}|")        
                         
                 elif subaction == "Q":
                     break

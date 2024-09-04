@@ -184,15 +184,18 @@ class Stock:
         return ordered_list
     
     def get_products_by_price(self, origin):
+
         products = []
 
-        price = origin.price
+        product_name = stock.get_product_by_name(origin)
+        price = product_name.price
+
         difference = 5
         for product in self.get_all_products():
             price_difference = abs(product.price - price)
             if price_difference <= difference:
                 products.append(product)
-
+        
         return products
     
     def sale():
@@ -208,7 +211,8 @@ nao_alimenticios = Category("não alimenticios", father)
 frutas = FinalCategory("frutas", alimenticios)
 verduras = FinalCategory("verduras", alimenticios)
 
-stock.add_product('uva', frutas.name, 3, 5)
+
+stock.add_product('uva', frutas, 3, 5)
 stock.add_product('pera', frutas, 5, 10)
 
 print(stock.get_all_products())
