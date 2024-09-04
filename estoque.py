@@ -28,6 +28,11 @@ class Stock:
                 "description": "Alterar o preço do produto.", 
                 "function": lambda product, new_value: setattr(product, 'price', float(new_value))
             }
+            {
+                "action": "5"
+                "description": "Alterar a quantidade de vendas do produto",
+                "fucntion": lambda product, new_value: setattr(product, 'sales', float(new_value))
+            }
         ]
         self.load_categories()
 
@@ -215,12 +220,11 @@ class Stock:
 
         return ordered_list
     
-    def get_products_by_price(self, origin):
-
+    def get_products_by_price(self, product_name):
         products = []
 
-        product_name = stock.get_product_by_name(origin)
-        price = product_name.price
+        found_product = self.get_product_by_name(product_name)
+        price = found_product.price
 
         difference = 5
         for product in self.get_all_products():
@@ -230,8 +234,19 @@ class Stock:
         
         return products
     
-    def sale():
-        pass
+    def register_sale(self, product, amount):
+        product = self.get_product(product)
+
+        if product == None:
+            print("O produto não foi encontrado")
+            return
+            
+        if product.quantity < amount:
+            print(f"Você não possui a quantia necessária para vender")
+            return
+        
+        product.sale(amount)
+
 
 stock = Stock()
 

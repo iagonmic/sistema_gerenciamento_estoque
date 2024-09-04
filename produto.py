@@ -6,6 +6,13 @@ class Product:
         self.category = category
         self.quantity = quantity
         self.price = price
+        self.sales = 0
     
     def __str__(self) -> str:
         return f'Product:[id={self.id}, name={self.name}, category={self.category.name}, quantity={self.quantity}, price={self.price}]'
+    
+    def sale(self, amount):
+        self.sales += amount
+        self.quantity = max(0, self.quantity - amount)
+
+        
