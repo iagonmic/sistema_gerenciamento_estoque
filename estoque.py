@@ -57,6 +57,10 @@ class Stock:
         return isinstance(category, FinalCategory)
 
     def get_category(self, name):
+
+        if name == self.product_category.name:
+            return self.product_category
+
         return self.product_category.get_category(name, self.product_category)
 
     def add_product(self, name, category_name, quantity, price):
