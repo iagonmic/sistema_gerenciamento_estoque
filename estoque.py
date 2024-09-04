@@ -1,11 +1,11 @@
 from produto import Product
-from tree import Category, ProductCategory, find_product
+from tree import Category, FinalCategory
 
 class Stock:
 
     def __init__(self):
-        self.stock = Category()
         self.current_id = 0
+        self.product_category = Category('Produtos')
         self.update_actions = [
             { 
                 "action": "1",
@@ -34,6 +34,27 @@ class Stock:
         self.current_id += 1
 
         return self.current_id
+    
+    def get_product(self, id, category=None): # Busca em profundidade (DFS)
+        if category == None:
+            category = self.product_category
+
+        if isinstance(category, FinalCategory):
+            for product in category.elements:
+                if product.id == id:
+                    return product
+                
+            return None
+        
+        for subcategory in category.subcategories:
+            product = self.get_product(subcategory, id)
+            if product != None:
+                return product
+        
+        return None
+    
+    def can_insert_items(self, category: Category):
+        return isinstance(category, FinalCategory)
 
     #
     # Get product if exists, else return None
@@ -50,17 +71,20 @@ class Stock:
             
         return None
 
-    def add_product(self, name, category, quantity, price):
+    def add_product(self, name, category_name, quantity, price):
+
+        category = self.get_category(category_name)
+        if category == None:
+            print("Categoria não encontrada.")
+            return
+        
+        if not self.can_insert_items(category):
+            print("Você não pode inserir elementos nesta categoria.")
+            return
+
         id = self.generate_id()
         new_product = Product(id, name, category, quantity, price)
-
-        all_products = list(self.get_all_products())
-
-        if not all_products:
-            self.stock.add_node(new_product, new_product)
-        else:
-            for product in all_products:
-                self.stock.add_node(new_product, product)
+        category.add_element(new_product)
 
         print(f"Produto {name} adicionado com sucesso.")
 
@@ -71,7 +95,8 @@ class Stock:
             print("Produto não encontrado.")
             return
         
-        self.stock.remove_node(product)
+        product.category.remove_element(product)
+
         print(f"Produto '{product.name}' removido com sucesso.")
 
     def update_product(self, id):
@@ -135,7 +160,13 @@ class Stock:
     # Get all products from stock
     #
     def get_all_products(self): 
-        return self.stock.get_all_nodes()
+        products = []
+
+        for final_category in self.product_category.get_all_final_categories():
+            for element in final_category.elements:
+                products.append(element)
+
+        return products
 
     #
     # Order by quantity from highest to lowest if stock is not empty
@@ -146,7 +177,7 @@ class Stock:
             return None
 
         ## Get all existent produts in stock
-        all_products = [element for element in self.get_all_products()]
+        all_products = self.get_all_products()
 
         ## Initialize ordered list
         ordered_list = []
@@ -179,4 +210,22 @@ class Stock:
     def sale():
         pass
 
-    
+stock = Stock()
+
+father = stock.product_category
+
+alimenticios = Category("alimentícios", father)
+nao_alimenticios = Category("não alimenticios", father)
+
+frutas = FinalCategory("frutas", alimenticios)
+verduras = FinalCategory("verduras", alimenticios)
+
+uva = Product(1, 'uva', frutas, 3, 5)
+pera = Product(2, 'pera', frutas, 5, 10)
+
+"""
+print(id(nao_alimenticios))
+print("-" * 60)
+found_frutas = stock.get_category('não alimenticios')
+print(id(found_frutas))
+print('Encontrado:', found_frutas)"""
