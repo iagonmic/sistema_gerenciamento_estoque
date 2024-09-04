@@ -47,7 +47,7 @@ class Stock:
             return None
         
         for subcategory in category.subcategories:
-            product = self.get_product(subcategory, id)
+            product = self.get_product(id, subcategory)
             if product != None:
                 return product
         
@@ -55,21 +55,6 @@ class Stock:
     
     def can_insert_items(self, category: Category):
         return isinstance(category, FinalCategory)
-
-    #
-    # Get product if exists, else return None
-    #
-    def get_product(self, id): 
-
-        ## Get all existent products in stock
-        all_products = self.get_all_products()
-
-        ## Find existent product in stock by ID
-        for product in all_products:
-            if product.id == id:
-                return product
-            
-        return None
 
     def add_product(self, name, category_name, quantity, price):
 
