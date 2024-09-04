@@ -1,10 +1,10 @@
 from produto import Product
-from graph import Graph
+from tree import Category, ProductCategory, find_product
 
 class Stock:
 
     def __init__(self):
-        self.stock = Graph()
+        self.stock = Category()
         self.current_id = 0
         self.update_actions = [
             { 
