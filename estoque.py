@@ -122,7 +122,7 @@ class Stock:
 
     # Get product if exists by name
     def get_product_by_name(self, name):
-        all_products = self.stock.get_all()
+        all_products = self.get_all_products()
         transformed_name = name.strip().lower()
 
         for product in all_products:
@@ -166,13 +166,16 @@ class Stock:
                 products.append(element)
 
         return products
+    
+    def is_empty(self):
+        return not self.get_all_products()
 
     #
     # Order by quantity from highest to lowest if stock is not empty
     #
     def order_by_quantity(self):
 
-        if self.stock.is_empty():
+        if self.is_empty():
             return None
 
         ## Get all existent produts in stock
@@ -225,7 +228,7 @@ verduras = FinalCategory("verduras", alimenticios)
 stock.add_product('uva', "frutas", 3, 5)
 stock.add_product('pera', "frutas", 5, 10)
 
-print(stock.get_products_by_category('alimentícios'))
+print(stock.get_all_products())
 
 """
 uva = Product(1, 'uva', frutas, 3, 5)
