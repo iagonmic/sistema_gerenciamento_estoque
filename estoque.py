@@ -1,3 +1,4 @@
+from csv import reader
 from produto import Product
 from tree import Category, FinalCategory
 
@@ -45,6 +46,15 @@ class Stock:
         FinalCategory('Limpeza', nao_alimenticios)
         FinalCategory('Beleza', nao_alimenticios)
         FinalCategory('Utilitários', nao_alimenticios)
+
+    def load_products(self, file):
+        with open('example_products.csv', newline = '') as csvfile:
+            csv_reader = reader(file)
+
+            next(csv_reader)
+
+            for row in csv_reader:
+                print(row)
 
     # Gerando ID novo a cada criação
     def generate_id(self):
@@ -127,15 +137,6 @@ class Stock:
 
         new_value = input("Insira o novo valor para o campo informado: ")
         action_object['function'](product, new_value)
-
-        # --- Graph --- #
-        all_products = self.get_all_products()
-
-        for key in all_products:
-            nodes = self.stock.get_nodes(key)
-            for node in nodes:
-                if node == product:
-                    action_object['function'][node, new_value]
 
     # Get product if exists by name
     def get_product_by_name(self, name):
@@ -245,15 +246,18 @@ verduras = FinalCategory("verduras", alimenticios)
 stock.add_product('uva', "frutas", 3, 5)
 stock.add_product('pera', "frutas", 5, 10)
 
-print(stock.get_all_products())
+stock.update_product(1)
+
+for product in stock.get_all_products():
+    print(product)
 
 """
 uva = Product(1, 'uva', frutas, 3, 5)
 pera = Product(2, 'pera', frutas, 5, 10)
 
 print(id(nao_alimenticios))
-print("-" * 60)
-found_frutas = stock.get_category('não alimenticios')
+print("-" * 60)limenticios')
 print(id(found_frutas))
+found_frutas = stock.get_category('não a
 print('Encontrado:', found_frutas)
 """
