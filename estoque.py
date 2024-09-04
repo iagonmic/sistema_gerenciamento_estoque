@@ -218,7 +218,7 @@ class Stock:
 
         products = []
 
-        product_name = stock.get_product_by_name(origin)
+        product_name = self.get_product_by_name(origin)
         price = product_name.price
 
         difference = 5
