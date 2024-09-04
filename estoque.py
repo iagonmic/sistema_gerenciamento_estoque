@@ -195,15 +195,18 @@ class Stock:
         return ordered_list
     
     def get_products_by_price(self, origin):
+
         products = []
 
-        price = origin.price
+        product_name = stock.get_product_by_name(origin)
+        price = product_name.price
+
         difference = 5
         for product in self.get_all_products():
             price_difference = abs(product.price - price)
             if price_difference <= difference:
                 products.append(product)
-
+        
         return products
     
     def sale():
