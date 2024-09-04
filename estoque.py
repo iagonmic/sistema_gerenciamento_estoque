@@ -132,16 +132,27 @@ class Stock:
         return None
     
     # Get list of products if exists by category
-    def get_products_by_category(self, category):
+    def get_products_by_category(self, category_name):
+        
+        transformed_category_name = category_name.strip().lower()
+        category = self.get_category(transformed_category_name)
+
         products = []
 
-        all_products = self.get_all_products()
-        transformed_category = category.strip().lower()
+        # First case: category is a final category
+        if isinstance(category, FinalCategory):
+            for element in category.elements:
+                products.append(element)
+            
+            return products
 
-        for product in all_products:
-            if transformed_category == product.category:
-                products.append(product)
-        
+        # Second case: category is not a final category
+        product_categories = category.get_all_final_categories()
+
+        for product_category in product_categories:
+            for element in product_category.elements:
+                products.append(element)
+
         return products
 
     #
@@ -208,10 +219,10 @@ nao_alimenticios = Category("não alimenticios", father)
 frutas = FinalCategory("frutas", alimenticios)
 verduras = FinalCategory("verduras", alimenticios)
 
-stock.add_product('uva', frutas.name, 3, 5)
-stock.add_product('pera', frutas, 5, 10)
+stock.add_product('uva', "frutas", 3, 5)
+stock.add_product('pera', "frutas", 5, 10)
 
-print(stock.get_all_products())
+print(stock.get_products_by_category('alimentícios'))
 
 """
 uva = Product(1, 'uva', frutas, 3, 5)

@@ -30,8 +30,7 @@ class Category:
     def get_all_final_categories(self):
         final_categories = []
 
-        for category in self.subcategories:
-            self.__found_final_category__(category, final_categories)
+        self.__found_final_category__(self, final_categories)
 
         return final_categories
     
