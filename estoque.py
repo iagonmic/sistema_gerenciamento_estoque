@@ -266,6 +266,3 @@ class Stock:
         
         product.sale(amount)
         print(f"Você vendeu {amount} unidades de {product.name}.")
-
-stock = Stock()
-print(stock.get_product(1))
