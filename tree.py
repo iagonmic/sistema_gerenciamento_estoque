@@ -47,6 +47,9 @@ class Category:
                 continue
             
             self.__found_final_category__(category, array)
+    
+    def can_insert_items(self):
+        return False
 
     def __str__(self):
         return f"Category:[name={self.name}]"
@@ -65,6 +68,9 @@ class FinalCategory(Category):
 
     def remove_element(self, element):
         self.elements.remove(element)
+
+    def can_insert_items(self):
+        return True
 
     def __str__(self):
         return f'Produtos de {self.name}: {self.elements}'
