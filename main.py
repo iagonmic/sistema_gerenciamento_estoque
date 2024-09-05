@@ -1,12 +1,12 @@
 from estoque import Stock
 
 def mensage(products):
-        print("-" * 75)
-        print(f"|{'ID':<5}|{'Nome':<20}|{'Categoria':<20}|{'Quantidade':<12}|{'Preço':<12}|")
-        print("-" * 75)
+        print("-" * 89)
+        print(f"|{'ID':<5}|{'Nome':<20}|{'Categoria':<20}|{'Quantidade':<12}|{'Preço':<12}||{'Vendas':<12}|")
+        print("-" * 89)
         for product in products:
-            print(f"|{product.id:<5}|{product.name:<20}|{product.category.name:<20}|{product.quantity:<12}|{product.price:<12}|")
-        print("-" * 75)
+            print(f"|{product.id:<5}|{product.name:<20}|{product.category.name:<20}|{product.quantity:<12}|{product.price:<12}||{product.sales:<12}|")
+        print("-" * 89)
 
 def main():
     stock = Stock()
@@ -103,7 +103,7 @@ def main():
                             "Digite Q - para sair."
                             ).upper()
                 
-                print("-" * 75)
+                print("-" * 89)
 
                 if subaction == "1":
                     products = stock.get_all_products()
