@@ -29,6 +29,7 @@ class Stock:
             }
         ]
         self.load_categories()
+        self.load_products()
 
     def load_categories(self):
         father = self.product_category
@@ -44,7 +45,40 @@ class Stock:
         FinalCategory('Higiene', nao_alimenticios)
         FinalCategory('Limpeza', nao_alimenticios)
         FinalCategory('Beleza', nao_alimenticios)
-        FinalCategory('Utilitários', nao_alimenticios)
+
+    def load_products(self):
+        self.add_product("Arroz", "Grãos", 20, 10)
+        self.add_product("Feijão", "Grãos", 15, 8)
+        self.add_product("Macarrão", "Grãos", 12, 5)
+        self.add_product("Açúcar", "Grãos", 10, 3)
+        self.add_product("Café", "Grãos", 25, 7)
+        self.add_product("Óleo de Soja", "Grãos", 18, 9)
+        self.add_product("Leite", "Laticínios", 6, 4)
+        self.add_product("Queijo", "Laticínios", 28, 3)
+        self.add_product("Iogurte", "Laticínios", 10, 4)
+        self.add_product("Manteiga", "Laticínios", 13, 7)
+        self.add_product("Presunto", "Carnes", 22, 6)
+        self.add_product("Bacon", "Carnes", 25, 3)
+        self.add_product("Carne Moída", "Carnes", 35, 5)
+        self.add_product("Frango", "Carnes", 28, 6)
+        self.add_product("Banana", "Frutas", 8, 8)
+
+        self.add_product("Sabão em Pó", "Limpeza", 22, 6)
+        self.add_product("Detergente", "Limpeza", 4, 10)
+        self.add_product("Desinfetante", "Limpeza", 8, 7)
+        self.add_product("Água Sanitária", "Limpeza", 9, 8)
+        self.add_product("Amaciante", "Limpeza", 15, 2)
+        self.add_product("Papel Higiênico", "Higiene", 12, 9)
+        self.add_product("Shampoo", "Higiene", 18, 4)
+        self.add_product("Condicionador", "Higiene", 20, 3)
+        self.add_product("Creme Dental", "Higiene", 7, 8)
+        self.add_product("Sabonete", "Higiene", 5, 10)
+        self.add_product("Escova de Dentes", "Higiene", 6, 7)
+        self.add_product("Lâmina de Barbear", "Beleza", 16, 4)
+        self.add_product("Esmalte", "Beleza", 9, 5)
+        self.add_product("Maquiagem", "Beleza", 30, 6)
+        self.add_product("Perfume", "Beleza", 50, 3)
+
 
     # Gerando ID novo a cada criação
     def generate_id(self):
@@ -235,21 +269,7 @@ class Stock:
 
 stock = Stock()
 
-father = stock.product_category
-
-alimenticios = Category("alimentícios", father)
-nao_alimenticios = Category("não alimenticios", father)
-
-frutas = FinalCategory("frutas", alimenticios)
-verduras = FinalCategory("verduras", alimenticios)
-
-stock.add_product('uva', "frutas", 3, 5)
-stock.add_product('pera', "frutas", 5, 10)
-
-stock.update_product(1)
-
-for product in stock.get_all_products():
-    print(product)
+stock.get_all_products()
 
 """
 uva = Product(1, 'uva', frutas, 3, 5)
