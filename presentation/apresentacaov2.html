@@ -1286,8 +1286,13 @@ Cauã Wendel
 <li class="fragment"><p>OBS²: Mantemos a comunicação pelo GitHub, usando Commits e Pull Requests, devido ao sucesso da ferramenta no trabalho colaborativo da versão anterior.</p></li>
 </ul>
 </section></section>
-<section id="metodologia-do-projeto" class="title-slide slide level1 center" data-auto-animate="true">
-<h1 data-id="quarto-animate-title">Metodologia do Projeto</h1>
+<section>
+<section id="metodologia-do-projeto" class="title-slide slide level1 center">
+<h1>Metodologia do Projeto</h1>
+
+</section>
+<section id="classes-abordadas" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Classes Abordadas</h2>
 <p>As principais classes do projeto são:</p>
 <div class="fragment fade-right">
 <p><strong>Classes Antigas:</strong></p>
@@ -1298,10 +1303,8 @@ Cauã Wendel
 </ul>
 </div>
 </section>
-
-<section>
-<section id="metodologia-do-projeto-1" class="title-slide slide level1 center" data-auto-animate="true">
-<h1 data-id="quarto-animate-title">Metodologia do Projeto</h1>
+<section id="classes-abordadas-1" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Classes Abordadas</h2>
 <p>As principais classes do projeto são:</p>
 <div class="fragment fade-right">
 <p><strong>Classes Novas:</strong></p>
@@ -1520,7 +1523,7 @@ Cauã Wendel
 </section>
 <section id="classe-stock" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Classe <code>Stock</code>:</h2>
-<p>Reformulamos toda a classe <code>Stock</code> para que ela comporte a nova estrutura de dados de árvore incluindo novas funcionalidades, além das já existentes de adicionar, remover, atualizar e listar os produtos do estoque.</p>
+<p>Reformulamos toda a classe <code>Stock</code> incluindo novas funcionalidades além das já existentes.</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode python hljs"><span id="cb13-1" class="hljs-ln-code"><a href></a><span class="im">from</span> produto <span class="im">import</span> Product</span>
 <span id="cb13-2" class="hljs-ln-code"><a href></a><span class="im">from</span> tree <span class="im">import</span> Category, FinalCategory</span>
 <span id="cb13-3" class="hljs-ln-code"><a href></a></span>
@@ -1788,12 +1791,251 @@ Cauã Wendel
 <span id="cb13-265" class="hljs-ln-code"><a href></a>            <span class="cf">return</span></span>
 <span id="cb13-266" class="hljs-ln-code"><a href></a>        </span>
 <span id="cb13-267" class="hljs-ln-code"><a href></a>        product.sale(amount)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="classe-stock-1" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Classe <code>Stock</code>:</h2>
+<p>Todas as funcionalidades foram reformuladas e algumas novas foram acrescentadas. Dentre essas, temos as seguintes mais importantes:</p>
+<ol type="1">
+<li class="fragment"><code>get_product()</code> -&gt; Foi completamente reformulada para funcionar com árvore</li>
+<li class="fragment"><code>get_products_by_category()</code> -&gt; Como as categorias são a base da árvore, tivemos que reformular completamente</li>
+</ol>
+</section>
+<section id="classe-stock-2" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Classe <code>Stock</code>:</h2>
+<p>Todas as funcionalidades foram reformuladas e algumas novas foram acrescentadas. Dentre essas, temos as seguintes mais importantes:</p>
+<ol start="3" type="1">
+<li class="fragment"><code>get_products_by_price()</code> -&gt; Nova funcionalidade onde é inserido um produto e é retornado uma sequência de produtos que tem preço semelhante</li>
+<li class="fragment"><code>register_sale()</code> -&gt; Nova funcionalidade onde é registrada a venda de um produto, atualizando sua quantidade no estoque</li>
+</ol>
+</section>
+<section id="classe-stock-3" class="slide level2 scrollable" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Classe <code>Stock</code>:</h2>
+<p>Na funcionalidade <code>get_product()</code>, passamos o id do produto e ele começa a realizar a busca em profundidade a partir de uma categoria. Se nenhuma categoria é passada, então começamos pelo topo da árvore, onde tem a categoria principal com todos os produtos <code>product_category</code></p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode python hljs"><span id="cb14-1" class="hljs-ln-code"><a href></a><span class="kw">def</span> get_product(<span class="va">self</span>, <span class="bu">id</span>, category<span class="op">=</span><span class="va">None</span>): <span class="co"># Busca em profundidade (DFS)</span></span>
+<span id="cb14-2" class="hljs-ln-code"><a href></a>    <span class="cf">if</span> category <span class="op">==</span> <span class="va">None</span>:</span>
+<span id="cb14-3" class="hljs-ln-code"><a href></a>        category <span class="op">=</span> <span class="va">self</span>.product_category</span>
+<span id="cb14-4" class="hljs-ln-code"><a href></a></span>
+<span id="cb14-5" class="hljs-ln-code"><a href></a>    <span class="cf">if</span> <span class="bu">isinstance</span>(category, FinalCategory):</span>
+<span id="cb14-6" class="hljs-ln-code"><a href></a>        <span class="cf">for</span> product <span class="kw">in</span> category.elements:</span>
+<span id="cb14-7" class="hljs-ln-code"><a href></a>            <span class="cf">if</span> product.<span class="bu">id</span> <span class="op">==</span> <span class="bu">id</span>:</span>
+<span id="cb14-8" class="hljs-ln-code"><a href></a>                <span class="cf">return</span> product</span>
+<span id="cb14-9" class="hljs-ln-code"><a href></a>            </span>
+<span id="cb14-10" class="hljs-ln-code"><a href></a>        <span class="cf">return</span> <span class="va">None</span></span>
+<span id="cb14-11" class="hljs-ln-code"><a href></a>    </span>
+<span id="cb14-12" class="hljs-ln-code"><a href></a>    <span class="cf">for</span> subcategory <span class="kw">in</span> category.subcategories:</span>
+<span id="cb14-13" class="hljs-ln-code"><a href></a>        product <span class="op">=</span> <span class="va">self</span>.get_product(<span class="bu">id</span>, subcategory)</span>
+<span id="cb14-14" class="hljs-ln-code"><a href></a>        <span class="cf">if</span> product <span class="op">!=</span> <span class="va">None</span>:</span>
+<span id="cb14-15" class="hljs-ln-code"><a href></a>            <span class="cf">return</span> product</span>
+<span id="cb14-16" class="hljs-ln-code"><a href></a>    </span>
+<span id="cb14-17" class="hljs-ln-code"><a href></a>    <span class="cf">return</span> <span class="va">None</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="classe-stock-4" class="slide level2 scrollable" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Classe <code>Stock</code>:</h2>
+<p>Na funcionalidade <code>get_product_by_category()</code>, passamos como parâmetro o nome da categoria, e começamos a buscar as categorias que estão abaixo dessa categoria até chegar em uma categoria final, onde tem os produtos do estoque. Assim, retornamos todos os produtos das categorias finais que são englobadas pela categoria passada.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode python hljs"><span id="cb15-1" class="hljs-ln-code"><a href></a><span class="kw">def</span> get_products_by_category(<span class="va">self</span>, category_name):</span>
+<span id="cb15-2" class="hljs-ln-code"><a href></a>        </span>
+<span id="cb15-3" class="hljs-ln-code"><a href></a>    transformed_category_name <span class="op">=</span> category_name.strip().lower()</span>
+<span id="cb15-4" class="hljs-ln-code"><a href></a>    category <span class="op">=</span> <span class="va">self</span>.get_category(transformed_category_name)</span>
+<span id="cb15-5" class="hljs-ln-code"><a href></a></span>
+<span id="cb15-6" class="hljs-ln-code"><a href></a>    products <span class="op">=</span> []</span>
+<span id="cb15-7" class="hljs-ln-code"><a href></a></span>
+<span id="cb15-8" class="hljs-ln-code"><a href></a>    <span class="co"># First case: category is a final category</span></span>
+<span id="cb15-9" class="hljs-ln-code"><a href></a>    <span class="cf">if</span> <span class="bu">isinstance</span>(category, FinalCategory):</span>
+<span id="cb15-10" class="hljs-ln-code"><a href></a>        <span class="cf">for</span> element <span class="kw">in</span> category.elements:</span>
+<span id="cb15-11" class="hljs-ln-code"><a href></a>            products.append(element)</span>
+<span id="cb15-12" class="hljs-ln-code"><a href></a>        </span>
+<span id="cb15-13" class="hljs-ln-code"><a href></a>        <span class="cf">return</span> products</span>
+<span id="cb15-14" class="hljs-ln-code"><a href></a></span>
+<span id="cb15-15" class="hljs-ln-code"><a href></a>    <span class="co"># Second case: category is not a final category</span></span>
+<span id="cb15-16" class="hljs-ln-code"><a href></a>    product_categories <span class="op">=</span> category.get_all_final_categories()</span>
+<span id="cb15-17" class="hljs-ln-code"><a href></a></span>
+<span id="cb15-18" class="hljs-ln-code"><a href></a>    <span class="cf">for</span> product_category <span class="kw">in</span> product_categories:</span>
+<span id="cb15-19" class="hljs-ln-code"><a href></a>        <span class="cf">for</span> element <span class="kw">in</span> product_category.elements:</span>
+<span id="cb15-20" class="hljs-ln-code"><a href></a>            products.append(element)</span>
+<span id="cb15-21" class="hljs-ln-code"><a href></a></span>
+<span id="cb15-22" class="hljs-ln-code"><a href></a>    <span class="cf">return</span> products</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="classe-stock-5" class="slide level2 scrollable" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Classe <code>Stock</code>:</h2>
+<p>Uma das novas funcionalidades é a <code>get_products_by_price()</code>, onde passamos um dos produtos do estoque, e buscamos por produtos que tem um preço semelhante. Nesse caso, adotamos uma diferença de 5 reais, ou seja, produtos que tem uma diferença de 5 reais do produto passado na função serão imprimidos.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode numberSource python number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode python hljs"><span id="cb16-1" class="hljs-ln-code"><a href></a><span class="kw">def</span> get_products_by_price(<span class="va">self</span>, product_name):</span>
+<span id="cb16-2" class="hljs-ln-code"><a href></a>        products <span class="op">=</span> []</span>
+<span id="cb16-3" class="hljs-ln-code"><a href></a></span>
+<span id="cb16-4" class="hljs-ln-code"><a href></a>        found_product <span class="op">=</span> <span class="va">self</span>.get_product_by_name(product_name)</span>
+<span id="cb16-5" class="hljs-ln-code"><a href></a>        price <span class="op">=</span> found_product.price</span>
+<span id="cb16-6" class="hljs-ln-code"><a href></a></span>
+<span id="cb16-7" class="hljs-ln-code"><a href></a>        difference <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb16-8" class="hljs-ln-code"><a href></a>        <span class="cf">for</span> product <span class="kw">in</span> <span class="va">self</span>.get_all_products():</span>
+<span id="cb16-9" class="hljs-ln-code"><a href></a>            price_difference <span class="op">=</span> <span class="bu">abs</span>(product.price <span class="op">-</span> price)</span>
+<span id="cb16-10" class="hljs-ln-code"><a href></a>            <span class="cf">if</span> price_difference <span class="op">&lt;=</span> difference:</span>
+<span id="cb16-11" class="hljs-ln-code"><a href></a>                products.append(product)</span>
+<span id="cb16-12" class="hljs-ln-code"><a href></a>        </span>
+<span id="cb16-13" class="hljs-ln-code"><a href></a>        <span class="cf">return</span> products</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="classe-stock-6" class="slide level2 scrollable" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Classe <code>Stock</code>:</h2>
+<p>Outra nova funcionalidade é a de <code>register_sale()</code>, onde registramos a venda de um produto. Criamos a exceção caso o produto não exista no estoque, ou então caso ele não tenha a quantidade necessária para vendas.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode numberSource python number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode python hljs"><span id="cb17-1" class="hljs-ln-code"><a href></a><span class="kw">def</span> register_sale(<span class="va">self</span>, product, amount):</span>
+<span id="cb17-2" class="hljs-ln-code"><a href></a>    product <span class="op">=</span> <span class="va">self</span>.get_product(product)</span>
+<span id="cb17-3" class="hljs-ln-code"><a href></a></span>
+<span id="cb17-4" class="hljs-ln-code"><a href></a>    <span class="cf">if</span> product <span class="op">==</span> <span class="va">None</span>:</span>
+<span id="cb17-5" class="hljs-ln-code"><a href></a>        <span class="bu">print</span>(<span class="st">&quot;O produto não foi encontrado&quot;</span>)</span>
+<span id="cb17-6" class="hljs-ln-code"><a href></a>        <span class="cf">return</span></span>
+<span id="cb17-7" class="hljs-ln-code"><a href></a>        </span>
+<span id="cb17-8" class="hljs-ln-code"><a href></a>    <span class="cf">if</span> product.quantity <span class="op">&lt;</span> amount:</span>
+<span id="cb17-9" class="hljs-ln-code"><a href></a>        <span class="bu">print</span>(<span class="ss">f&quot;Você não possui a quantia necessária para vender&quot;</span>)</span>
+<span id="cb17-10" class="hljs-ln-code"><a href></a>        <span class="cf">return</span></span>
+<span id="cb17-11" class="hljs-ln-code"><a href></a>    </span>
+<span id="cb17-12" class="hljs-ln-code"><a href></a>    product.sale(amount)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section></section>
+<section>
+<section id="dificuldades-enfrentadas" class="title-slide slide level1 center" data-auto-animate="true">
+<h1 data-id="quarto-animate-title">Dificuldades Enfrentadas</h1>
+
+</section>
+<section id="dificuldades-enfrentadas-1" class="slide level2 scrollable" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Dificuldades Enfrentadas</h2>
+<p>Criação de nova maneira de printar o resultado final: adaptação para o formato de tabela.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode numberSource markdown number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode markdown hljs"><span id="cb18-1" class="hljs-ln-code"><a href></a>Relatório dos produtos</span>
+<span id="cb18-2" class="hljs-ln-code"><a href></a>---------------------------------------------------------------------------</span>
+<span id="cb18-3" class="hljs-ln-code"><a href></a>|ID   |Nome                |Categoria           |Quantidade  |Preço       |</span>
+<span id="cb18-4" class="hljs-ln-code"><a href></a>---------------------------------------------------------------------------</span>
+<span id="cb18-5" class="hljs-ln-code"><a href></a>|11   |Presunto            |Carnes              |22          |6           |</span>
+<span id="cb18-6" class="hljs-ln-code"><a href></a>|12   |Bacon               |Carnes              |25          |3           |</span>
+<span id="cb18-7" class="hljs-ln-code"><a href></a>|13   |Carne Moída         |Carnes              |35          |5           |</span>
+<span id="cb18-8" class="hljs-ln-code"><a href></a>|14   |Frango              |Carnes              |28          |6           |</span>
+<span id="cb18-9" class="hljs-ln-code"><a href></a>|15   |Banana              |Frutas              |8           |8           |</span>
+<span id="cb18-10" class="hljs-ln-code"><a href></a>|1    |Arroz               |Grãos               |20          |10          |</span>
+<span id="cb18-11" class="hljs-ln-code"><a href></a>|2    |Feijão              |Grãos               |15          |8           |</span>
+<span id="cb18-12" class="hljs-ln-code"><a href></a>|3    |Macarrão            |Grãos               |12          |5           |</span>
+<span id="cb18-13" class="hljs-ln-code"><a href></a>|4    |Açúcar              |Grãos               |10          |3           |</span>
+<span id="cb18-14" class="hljs-ln-code"><a href></a>|5    |Café                |Grãos               |25          |7           |</span>
+<span id="cb18-15" class="hljs-ln-code"><a href></a>|6    |Óleo de Soja        |Grãos               |18          |9           |</span>
+<span id="cb18-16" class="hljs-ln-code"><a href></a>|7    |Leite               |Laticínios          |6           |4           |</span>
+<span id="cb18-17" class="hljs-ln-code"><a href></a>|8    |Queijo              |Laticínios          |28          |3           |</span>
+<span id="cb18-18" class="hljs-ln-code"><a href></a>|9    |Iogurte             |Laticínios          |10          |4           |</span>
+<span id="cb18-19" class="hljs-ln-code"><a href></a>|10   |Manteiga            |Laticínios          |13          |7           |</span>
+<span id="cb18-20" class="hljs-ln-code"><a href></a>|21   |Papel Higiênico     |Higiene             |12          |9           |</span>
+<span id="cb18-21" class="hljs-ln-code"><a href></a>|22   |Shampoo             |Higiene             |18          |4           |</span>
+<span id="cb18-22" class="hljs-ln-code"><a href></a>|23   |Condicionador       |Higiene             |20          |3           |</span>
+<span id="cb18-23" class="hljs-ln-code"><a href></a>|24   |Creme Dental        |Higiene             |7           |8           |</span>
+<span id="cb18-24" class="hljs-ln-code"><a href></a>|25   |Sabonete            |Higiene             |5           |10          |</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="dificuldades-enfrentadas-2" class="slide level2 scrollable" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Dificuldades Enfrentadas</h2>
+<p>Como agora deve ser feita a criação de várias categorias e subcategorias, implementamos a leitura prévia no estoque de categorias existentes através das funções <code>load_categories()</code> e <code>load_products()</code> (tipo um banco de dados)</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode numberSource python number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode python hljs"><span id="cb19-1" class="hljs-ln-code"><a href></a><span class="kw">def</span> load_categories(<span class="va">self</span>):</span>
+<span id="cb19-2" class="hljs-ln-code"><a href></a>    father <span class="op">=</span> <span class="va">self</span>.product_category</span>
+<span id="cb19-3" class="hljs-ln-code"><a href></a></span>
+<span id="cb19-4" class="hljs-ln-code"><a href></a>    alimenticios <span class="op">=</span> Category(<span class="st">&#39;Alimentícios&#39;</span>, father)</span>
+<span id="cb19-5" class="hljs-ln-code"><a href></a>    nao_alimenticios <span class="op">=</span> Category(<span class="st">&#39;Não Alimentícios&#39;</span>, father)</span>
+<span id="cb19-6" class="hljs-ln-code"><a href></a></span>
+<span id="cb19-7" class="hljs-ln-code"><a href></a>    FinalCategory(<span class="st">&#39;Carnes&#39;</span>, alimenticios)</span>
+<span id="cb19-8" class="hljs-ln-code"><a href></a>    FinalCategory(<span class="st">&#39;Frutas&#39;</span>, alimenticios)</span>
+<span id="cb19-9" class="hljs-ln-code"><a href></a>    FinalCategory(<span class="st">&#39;Grãos&#39;</span>, alimenticios)</span>
+<span id="cb19-10" class="hljs-ln-code"><a href></a>    FinalCategory(<span class="st">&#39;Laticínios&#39;</span>, alimenticios)</span>
+<span id="cb19-11" class="hljs-ln-code"><a href></a></span>
+<span id="cb19-12" class="hljs-ln-code"><a href></a>    FinalCategory(<span class="st">&#39;Higiene&#39;</span>, nao_alimenticios)</span>
+<span id="cb19-13" class="hljs-ln-code"><a href></a>    FinalCategory(<span class="st">&#39;Limpeza&#39;</span>, nao_alimenticios)</span>
+<span id="cb19-14" class="hljs-ln-code"><a href></a>    FinalCategory(<span class="st">&#39;Beleza&#39;</span>, nao_alimenticios)</span>
+<span id="cb19-15" class="hljs-ln-code"><a href></a></span>
+<span id="cb19-16" class="hljs-ln-code"><a href></a><span class="kw">def</span> load_products(<span class="va">self</span>):</span>
+<span id="cb19-17" class="hljs-ln-code"><a href></a>    stock.add_product(<span class="st">&quot;Arroz&quot;</span>, <span class="st">&quot;Grãos&quot;</span>, <span class="dv">10</span>, <span class="dv">45</span>)</span>
+<span id="cb19-18" class="hljs-ln-code"><a href></a>    stock.add_product(<span class="st">&quot;Feijão&quot;</span>, <span class="st">&quot;Grãos&quot;</span>, <span class="dv">8</span>, <span class="dv">37</span>)</span>
+<span id="cb19-19" class="hljs-ln-code"><a href></a>    stock.add_product(<span class="st">&quot;Macarrão&quot;</span>, <span class="st">&quot;Grãos&quot;</span>, <span class="dv">5</span>, <span class="dv">22</span>)</span>
+<span id="cb19-20" class="hljs-ln-code"><a href></a>    stock.add_product(<span class="st">&quot;Açúcar&quot;</span>, <span class="st">&quot;Grãos&quot;</span>, <span class="dv">3</span>, <span class="dv">15</span>)</span>
+<span id="cb19-21" class="hljs-ln-code"><a href></a>    stock.add_product(<span class="st">&quot;Café&quot;</span>, <span class="st">&quot;Grãos&quot;</span>, <span class="dv">7</span>, <span class="dv">60</span>)</span>
+<span id="cb19-22" class="hljs-ln-code"><a href></a>    stock.add_product(<span class="st">&quot;Óleo de Soja&quot;</span>, <span class="st">&quot;Grãos&quot;</span>, <span class="dv">9</span>, <span class="dv">50</span>)</span>
+<span id="cb19-23" class="hljs-ln-code"><a href></a>    stock.add_product(<span class="st">&quot;Leite&quot;</span>, <span class="st">&quot;Laticínios&quot;</span>, <span class="dv">4</span>, <span class="dv">12</span>)</span>
+<span id="cb19-24" class="hljs-ln-code"><a href></a>    stock.add_product(<span class="st">&quot;Queijo&quot;</span>, <span class="st">&quot;Laticínios&quot;</span>, <span class="dv">3</span>, <span class="dv">80</span>)</span>
+<span id="cb19-25" class="hljs-ln-code"><a href></a>    stock.add_product(<span class="st">&quot;Iogurte&quot;</span>, <span class="st">&quot;Laticínios&quot;</span>, <span class="dv">4</span>, <span class="dv">18</span>)</span>
+<span id="cb19-26" class="hljs-ln-code"><a href></a>    stock.add_product(<span class="st">&quot;Manteiga&quot;</span>, <span class="st">&quot;Laticínios&quot;</span>, <span class="dv">7</span>, <span class="dv">40</span>)</span>
+<span id="cb19-27" class="hljs-ln-code"><a href></a>    stock.add_product(<span class="st">&quot;Presunto&quot;</span>, <span class="st">&quot;Carnes&quot;</span>, <span class="dv">6</span>, <span class="dv">75</span>)</span>
+<span id="cb19-28" class="hljs-ln-code"><a href></a>    stock.add_product(<span class="st">&quot;Bacon&quot;</span>, <span class="st">&quot;Carnes&quot;</span>, <span class="dv">3</span>, <span class="dv">65</span>)</span>
+<span id="cb19-29" class="hljs-ln-code"><a href></a>    stock.add_product(<span class="st">&quot;Carne Moída&quot;</span>, <span class="st">&quot;Carnes&quot;</span>, <span class="dv">5</span>, <span class="dv">90</span>)</span>
+<span id="cb19-30" class="hljs-ln-code"><a href></a>    stock.add_product(<span class="st">&quot;Frango&quot;</span>, <span class="st">&quot;Carnes&quot;</span>, <span class="dv">6</span>, <span class="dv">85</span>)</span>
+<span id="cb19-31" class="hljs-ln-code"><a href></a>    stock.add_product(<span class="st">&quot;Banana&quot;</span>, <span class="st">&quot;Frutas&quot;</span>, <span class="dv">8</span>, <span class="dv">10</span>)</span>
+<span id="cb19-32" class="hljs-ln-code"><a href></a></span>
+<span id="cb19-33" class="hljs-ln-code"><a href></a>    stock.add_product(<span class="st">&quot;Sabão em Pó&quot;</span>, <span class="st">&quot;Limpeza&quot;</span>, <span class="dv">6</span>, <span class="dv">35</span>)</span>
+<span id="cb19-34" class="hljs-ln-code"><a href></a>    stock.add_product(<span class="st">&quot;Detergente&quot;</span>, <span class="st">&quot;Limpeza&quot;</span>, <span class="dv">10</span>, <span class="dv">8</span>)</span>
+<span id="cb19-35" class="hljs-ln-code"><a href></a>    stock.add_product(<span class="st">&quot;Desinfetante&quot;</span>, <span class="st">&quot;Limpeza&quot;</span>, <span class="dv">7</span>, <span class="dv">25</span>)</span>
+<span id="cb19-36" class="hljs-ln-code"><a href></a>    stock.add_product(<span class="st">&quot;Água Sanitária&quot;</span>, <span class="st">&quot;Limpeza&quot;</span>, <span class="dv">8</span>, <span class="dv">30</span>)</span>
+<span id="cb19-37" class="hljs-ln-code"><a href></a>    stock.add_product(<span class="st">&quot;Amaciante&quot;</span>, <span class="st">&quot;Limpeza&quot;</span>, <span class="dv">2</span>, <span class="dv">55</span>)</span>
+<span id="cb19-38" class="hljs-ln-code"><a href></a>    stock.add_product(<span class="st">&quot;Papel Higiênico&quot;</span>, <span class="st">&quot;Higiene&quot;</span>, <span class="dv">9</span>, <span class="dv">12</span>)</span>
+<span id="cb19-39" class="hljs-ln-code"><a href></a>    stock.add_product(<span class="st">&quot;Shampoo&quot;</span>, <span class="st">&quot;Higiene&quot;</span>, <span class="dv">4</span>, <span class="dv">45</span>)</span>
+<span id="cb19-40" class="hljs-ln-code"><a href></a>    stock.add_product(<span class="st">&quot;Condicionador&quot;</span>, <span class="st">&quot;Higiene&quot;</span>, <span class="dv">3</span>, <span class="dv">50</span>)</span>
+<span id="cb19-41" class="hljs-ln-code"><a href></a>    stock.add_product(<span class="st">&quot;Creme Dental&quot;</span>, <span class="st">&quot;Higiene&quot;</span>, <span class="dv">8</span>, <span class="dv">18</span>)</span>
+<span id="cb19-42" class="hljs-ln-code"><a href></a>    stock.add_product(<span class="st">&quot;Sabonete&quot;</span>, <span class="st">&quot;Higiene&quot;</span>, <span class="dv">10</span>, <span class="dv">5</span>)</span>
+<span id="cb19-43" class="hljs-ln-code"><a href></a>    stock.add_product(<span class="st">&quot;Escova de Dentes&quot;</span>, <span class="st">&quot;Higiene&quot;</span>, <span class="dv">7</span>, <span class="dv">14</span>)</span>
+<span id="cb19-44" class="hljs-ln-code"><a href></a>    stock.add_product(<span class="st">&quot;Lâmina de Barbear&quot;</span>, <span class="st">&quot;Beleza&quot;</span>, <span class="dv">4</span>, <span class="dv">20</span>)</span>
+<span id="cb19-45" class="hljs-ln-code"><a href></a>    stock.add_product(<span class="st">&quot;Esmalte&quot;</span>, <span class="st">&quot;Beleza&quot;</span>, <span class="dv">5</span>, <span class="dv">9</span>)</span>
+<span id="cb19-46" class="hljs-ln-code"><a href></a>    stock.add_product(<span class="st">&quot;Maquiagem&quot;</span>, <span class="st">&quot;Beleza&quot;</span>, <span class="dv">6</span>, <span class="dv">80</span>)</span>
+<span id="cb19-47" class="hljs-ln-code"><a href></a>    stock.add_product(<span class="st">&quot;Perfume&quot;</span>, <span class="st">&quot;Beleza&quot;</span>, <span class="dv">3</span>, <span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="dificuldades-enfrentadas-3" class="slide level2 scrollable" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Dificuldades Enfrentadas</h2>
+<p>Implementação do método <code>__str__</code> em todas as classes para melhor visualização da classe ao printar</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode numberSource python number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode python hljs"><span id="cb20-1" class="hljs-ln-code"><a href></a><span class="kw">class</span> Product:</span>
+<span id="cb20-2" class="hljs-ln-code"><a href></a></span>
+<span id="cb20-3" class="hljs-ln-code"><a href></a>    <span class="kw">def</span> <span class="fu">__str__</span>(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb20-4" class="hljs-ln-code"><a href></a>        <span class="cf">return</span> <span class="ss">f&#39;Product:[id=</span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span><span class="bu">id</span><span class="sc">}</span><span class="ss">, name=</span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>name<span class="sc">}</span><span class="ss">, category=</span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>category<span class="sc">.</span>name<span class="sc">}</span><span class="ss">, quantity=</span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>quantity<span class="sc">}</span><span class="ss">, price=</span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>price<span class="sc">}</span><span class="ss">, sales=</span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>sales<span class="sc">}</span><span class="ss">]&#39;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="dificuldades-enfrentadas-4" class="slide level2 scrollable" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Dificuldades Enfrentadas</h2>
+<p>Implementação do método <code>__str__</code> em todas as classes para melhor visualização da classe ao printar</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode numberSource python number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode python hljs"><span id="cb21-1" class="hljs-ln-code"><a href></a><span class="kw">class</span> Category:</span>
+<span id="cb21-2" class="hljs-ln-code"><a href></a>    </span>
+<span id="cb21-3" class="hljs-ln-code"><a href></a>    <span class="kw">def</span> <span class="fu">__str__</span>(<span class="va">self</span>):</span>
+<span id="cb21-4" class="hljs-ln-code"><a href></a>        <span class="cf">return</span> <span class="ss">f&quot;Category:[name=</span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>name<span class="sc">}</span><span class="ss">]&quot;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="dificuldades-enfrentadas-5" class="slide level2 scrollable" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Dificuldades Enfrentadas</h2>
+<p>Implementação do método <code>__str__</code> em todas as classes para melhor visualização da classe ao printar</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode numberSource python number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode python hljs"><span id="cb22-1" class="hljs-ln-code"><a href></a><span class="kw">class</span> FinalCategory(Category):</span>
+<span id="cb22-2" class="hljs-ln-code"><a href></a></span>
+<span id="cb22-3" class="hljs-ln-code"><a href></a>    <span class="kw">def</span> <span class="fu">__str__</span>(<span class="va">self</span>):</span>
+<span id="cb22-4" class="hljs-ln-code"><a href></a>        <span class="cf">return</span> <span class="ss">f&#39;Produtos de </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>name<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>elements<span class="sc">}</span><span class="ss">&#39;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="dificuldades-enfrentadas-6" class="slide level2 scrollable" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Dificuldades Enfrentadas</h2>
+<p>Cuidado com a verificação de classe através da função pré-instalada <code>isinstance(object, class)</code> em vários lugares do código. A exemplificar:</p>
+<div class="sourceCode" id="cb23" data-code-line-numbers="4"><pre class="sourceCode numberSource python number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode python hljs"><span id="cb23-1" class="hljs-ln-code"><a href></a>    <span class="kw">def</span> __found_final_category__(<span class="va">self</span>, father, array):</span>
+<span id="cb23-2" class="hljs-ln-code"><a href></a></span>
+<span id="cb23-3" class="hljs-ln-code"><a href></a>        <span class="cf">for</span> category <span class="kw">in</span> father.subcategories:</span>
+<span id="cb23-4" class="hljs-ln-code"><a href></a>            <span class="cf">if</span> <span class="bu">isinstance</span>(category, FinalCategory):</span>
+<span id="cb23-5" class="hljs-ln-code"><a href></a>                array.append(category)</span>
+<span id="cb23-6" class="hljs-ln-code"><a href></a>                <span class="cf">continue</span></span>
+<span id="cb23-7" class="hljs-ln-code"><a href></a>            </span>
+<span id="cb23-8" class="hljs-ln-code"><a href></a>            <span class="va">self</span>.__found_final_category__(category, array)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section></section>
+<section>
+<section id="conclusão" class="title-slide slide level1 center">
+<h1>Conclusão</h1>
+
+</section>
+<section id="considerações" class="slide level2">
+<h2>Considerações</h2>
+<ul>
+<li class="fragment">Conseguimos realizar a atualização do sistema de gerenciamento de estoque para uma estrutura de dados mais avançada como árvore.</li>
+<li class="fragment">Construímos funcionalidades mais interessantes do que as que existiam na versão anterior, além de melhorar as que já existiam.</li>
+</ul>
+</section>
+<section id="melhorias-futuras" class="slide level2">
+<h2>Melhorias Futuras</h2>
+<ul>
+<li class="fragment">Deixar o banco de dados do programa mais robusto para comportar dados maiores ao invés de passar os produtos no construtor da classe <code>Stock</code></li>
+<li class="fragment">Implementar a busca em largura (<code>BFS</code>)</li>
+<li class="fragment">Construir novas funcionalidades que trabalhem a similaridade entre produtos através das categorias e subcategorias, como a <code>verificação da porcentagem de vendas de um produto em relação à categoria e ao total.</code></li>
+</ul>
+</section></section>
+<section id="demonstração-do-código" class="title-slide slide level1 center">
+<h1>Demonstração do código</h1>
 <div class="quarto-auto-generated-content">
 <div class="footer footer-default">
 
 </div>
 </div>
-</section></section>
+</section>
     </div>
   </div>
 
