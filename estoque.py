@@ -269,15 +269,4 @@ class Stock:
 
 stock = Stock()
 
-stock.get_all_products()
-
-"""
-uva = Product(1, 'uva', frutas, 3, 5)
-pera = Product(2, 'pera', frutas, 5, 10)
-
-print(id(nao_alimenticios))
-print("-" * 60)limenticios')
-print(id(found_frutas))
-found_frutas = stock.get_category('não a
-print('Encontrado:', found_frutas)
-"""
+print(stock.get_product_by_name('Arroz'))
