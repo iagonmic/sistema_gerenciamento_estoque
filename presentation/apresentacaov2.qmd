@@ -15,7 +15,6 @@ format:
     embed-resources: true
 
 mainfont: Consolas
-monofont: JetBrains Mono
 ---
 
 # Introdução
