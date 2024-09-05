@@ -16,6 +16,7 @@ def main():
             "Digite 1 - para adicionar, remover ou atualizar produtos,\n"
             "Digite 2 - para buscar produto, por categoria, por quantidade,\n"
             "Digite 3 - para listar os produtos,\n"
+            "Digite 4 - para vender um produto, \n"
             "Digite Q - para sair."
             ).upper()
 
@@ -70,7 +71,7 @@ def main():
                     product = stock.get_product_by_name(product_name)
                     if product:
                         print("-" * 75)
-                        print(f"ID: {product.id}, Nome: {product.name}, Categoria: {product.category}, Quantidade: {product.quantity}, Preço: {product.price}")
+                        print(f"ID: {product.id}, Nome: {product.name}, Categoria: {product.category.name}, Quantidade: {product.quantity}, Preço: {product.price}")
                         print("-" * 75)
                     else:
                         print("Nenhum produto encontrado.")
@@ -135,6 +136,12 @@ def main():
 
                 else:
                     print("Ação inválida.")
+
+        elif action == "4":
+            product_id = int(input("Insira o id do produto a ser vendido: "))
+            amount = int(input("Insira a quantidade que você quer vender: "))
+
+            stock.register_sale(product_id, amount)
 
         elif action == "Q":
             break

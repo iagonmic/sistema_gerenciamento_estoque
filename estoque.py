@@ -253,15 +253,19 @@ class Stock:
         
         return products
     
-    def register_sale(self, product, amount):
-        product = self.get_product(product)
+    def register_sale(self, product_id, amount):
+        product = self.get_product(product_id)
 
         if product == None:
-            print("O produto não foi encontrado")
+            print("O produto não foi encontrado.")
             return
             
         if product.quantity < amount:
-            print(f"Você não possui a quantia necessária para vender")
+            print(f"Você não possui a quantia necessária para vender.")
             return
         
         product.sale(amount)
+        print(f"Você vendeu {amount} unidades de {product.name}.")
+
+stock = Stock()
+print(stock.get_product(1))
