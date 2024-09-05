@@ -261,7 +261,7 @@ class Stock:
             return
             
         if product.quantity < amount:
-            print(f"Você não possui a quantia necessária para vender.")
+            print(f"Você não possui a quantia necessária de {product.name} para vender.")
             return
         
         product.sale(amount)
