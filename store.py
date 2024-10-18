@@ -26,7 +26,7 @@ class Store:
         while len(temp_list) > 0:
             append_list = []
 
-            for j in range(5):
+            for _ in range(5):
                 if len(temp_list) == 0:
                     break
 
