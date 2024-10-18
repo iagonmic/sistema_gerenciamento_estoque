@@ -6,6 +6,7 @@ class Stock:
     def __init__(self):
         self.current_id = 0
         self.product_category = Category('Produtos')
+        self.sections_by_category = {}
         self.update_actions = [
             { 
                 "action": "1",
@@ -79,6 +80,11 @@ class Stock:
         self.add_product("Maquiagem", "Beleza", 6, 80)
         self.add_product("Perfume", "Beleza", 3, 100)
 
+    # Função para atualizar o self.sections_by_category do Stock
+    def stock_section_update(self, product:Product):
+        if product.category not in self.sections_by_category.keys():
+            self.sections_by_category.update({product.category:len(self.sections_by_category)+1})
+
     # Gerando ID novo a cada criação
     def generate_id(self):
         self.current_id += 1
@@ -120,6 +126,8 @@ class Stock:
         id = self.generate_id()
         new_product = Product(id, name, category, quantity, price)
         category.add_element(new_product)
+        self.stock_section_update(new_product)
+        new_product.section = self.sections_by_category.get(new_product.category)
 
         print(f"Produto {name} adicionado com sucesso.")
 
