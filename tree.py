@@ -74,6 +74,10 @@ class FinalCategory(Category):
 
     def __str__(self):
         return f'Produtos de {self.name}: {self.elements}'
+    
+    def __repr__(self) -> str:
+        return self.name
+    
 
 
 """
