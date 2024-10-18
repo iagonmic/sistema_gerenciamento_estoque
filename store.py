@@ -15,9 +15,8 @@ class Store:
         self.nodes = {Node(product) for product in stock.get_all_products()} # set com um node de cada produto
 
         for node in self.nodes:
-            node.neighbors.update({Node(stock_product):abs(node.product.section - stock_product.section) for stock_product in stock.get_all_products()})
+            node.neighbors.update({Node(stock_product):self.get_node_distance(node.product, stock_product) for stock_product in stock.get_all_products()})
         
-
     # Função para organizar as seções da loja em formato de grid com fileiras de 5 de acordo com as categorias disponíveis na classe stock
     def update_stock_sections(self, stock:Stock):
         return_list = []
@@ -39,5 +38,22 @@ class Store:
         return return_list
     
 
-stock = Stock()
-store = Store(stock)
+    # nesse caso será implementada a distância de Manhattan pois o movimento só é feito em linhas horizontais e verticais no grid do estoque
+    # caso fosse possível movimento livre, em diagonais, utilizariamos a distância Euclidiana
+    def get_node_distance(self, origin:Product, end:Product):
+        origin_row = 0
+        origin_column = 0
+
+        end_row = 0
+        end_column = 0
+
+        for row in self.sections:
+            if origin.section in row:
+                origin_column = row.index(origin.section)
+                origin_row = self.sections.index(row)
+
+            if end.section in row:
+                end_column = row.index(end.section)
+                end_row = self.sections.index(row)
+
+        return abs(end_row - origin_row) + abs(end_column + origin_column)
