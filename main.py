@@ -1,155 +1,212 @@
+from store import Store
 from estoque import Stock
+import streamlit as stl
+import plotly.graph_objs as go
+import networkx as nx
+import pandas as pd
 
-def mensage(products):
-        print("-" * 89)
-        print(f"|{'ID':<5}|{'Nome':<20}|{'Categoria':<20}|{'Quantidade':<12}|{'Preço':<12}||{'Vendas':<12}|")
-        print("-" * 89)
-        for product in products:
-            print(f"|{product.id:<5}|{product.name:<20}|{product.category.name:<20}|{product.quantity:<12}|{product.price:<12}||{product.sales:<12}|")
-        print("-" * 89)
+stock = Stock()
+store = Store(stock)
+
+def show_products(products):
+    # Converte os objetos Product para uma lista de dicionários
+    product_dicts = [product.to_dict() for product in products]
+    
+    # Cria o DataFrame
+    df = pd.DataFrame(product_dicts).sort_values("ID")
+    
+    # Exibe o DataFrame no Streamlit
+    stl.dataframe(df, hide_index=True, height=400, width= 1200)
+
+def get_graph(arestas):
+    graph = nx.Graph()
+    
+    for first_product, last_product, distance in arestas:
+        graph.add_edge(first_product, last_product, weight=distance)
+
+    return graph
+
+def plot_grafo(graph, edge_color, node_color, bg_color, font_size, layout_type, text_color, edge_width, node_size, box_color, box_size, node_text_color, fig_width, fig_height):
+    # Determinar o layout com base na escolha do usuário
+    if layout_type == "spring":
+        pos = nx.spring_layout(graph)
+    elif layout_type == "circular":
+        pos = nx.circular_layout(graph)
+    elif layout_type == "random":
+        pos = nx.random_layout(graph)
+    elif layout_type == "shell":
+        pos = nx.shell_layout(graph)
+    else:
+        pos = nx.kamada_kawai_layout(graph)  # Padrão se o layout não for reconhecido
+
+    # Criar listas para as coordenadas das arestas
+    edge_x = []
+    edge_y = []
+    edge_text = []  # Lista para armazenar os textos das distâncias
+    edges = list(graph.edges(data=True))  # Obter as arestas como uma lista
+
+    for edge in edges:
+        x0, y0 = pos[edge[0]]
+        x1, y1 = pos[edge[1]]
+        edge_x.extend([x0, x1, None])  # None para criar uma quebra na linha
+        edge_y.extend([y0, y1, None])
+        edge_text.append(f"{edge[2]['weight']}")  # Armazena a distância da aresta
+
+    # Criação das arestas
+    edge_trace = go.Scatter(
+        x=edge_x, y=edge_y,
+        line=dict(width=edge_width, color=edge_color),
+        hoverinfo='none',
+        mode='lines'
+    )
+
+    # Criação dos nós
+    node_x = [pos[node][0] for node in graph.nodes()]
+    node_y = [pos[node][1] for node in graph.nodes()]
+    node_trace = go.Scatter(
+        x=node_x, y=node_y,
+        mode='markers+text',
+        marker=dict(size=node_size, color=node_color, line=dict(width=2)),
+        text=[node for node in graph.nodes()],
+        textposition="middle center",  # Centraliza o texto dentro do nó
+        textfont=dict(size=font_size, color=node_text_color),  # Cor do texto do nó configurável
+        hoverinfo='text'
+    )
+
+    # Criar a figura
+    fig = go.Figure(data=[edge_trace, node_trace])
+
+    # Adicionar textos das distâncias com caixa de fundo
+    for i, text in enumerate(edge_text):
+        # Posicionar o texto no meio da aresta
+        x0, y0 = pos[edges[i][0]]
+        x1, y1 = pos[edges[i][1]]
+        x_text = (x0 + x1) / 2
+        y_text = (y0 + y1) / 2
+        
+        fig.add_annotation(
+            x=x_text,
+            y=y_text,
+            text=text,
+            showarrow=False,
+            font=dict(size=font_size, color=text_color),  # Cor do texto da distância configurável
+            bgcolor=box_color,  # Cor da caixa de fundo configurável
+            bordercolor="black",  # Cor da borda da caixa (não será visível com borderwidth=0)
+            borderwidth=0,  # Sem borda
+            borderpad=4,  # Preenchimento da borda
+            xref="x",  # Referência do eixo X
+            yref="y",  # Referência do eixo Y
+            width=box_size[0],  # Largura da caixa
+            height=box_size[1],  # Altura da caixa
+        )
+
+    fig.update_layout(
+        width=fig_width,  # Definindo a largura
+        height=fig_height,  # Definindo a altura
+        showlegend=False,
+        hovermode='closest',
+        margin=dict(l=0, r=0, t=0, b=0),
+        xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+        yaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+        plot_bgcolor=bg_color
+    )
+
+    return fig
+
+def functions():
+
+    stl.title("Gerenciador de Produtos")
+
+# Menu de navegação
+    menu = stl.sidebar.selectbox("Escolha uma opção", ["Adicionar Produto","Remover Produto"])
+
+    categories = []
+
+    for key in stock.sections_by_category.keys():
+        categories.append(key.name)
+
+    print(categories)
+
+    if menu == "Adicionar Produto":
+        stl.header("Adicionar Produto")
+        # Campos para adicionar um produto com chaves únicas
+        nome = stl.text_input("Nome do Produto", key="nome_produto")
+        categoria = stl.selectbox("Categoria", categories, key="categoria_produto")
+        quantidade = stl.number_input("Quantidade", min_value=1, step=1, key="quantidade_produto")
+        preco = stl.number_input("Preço", min_value=0.0, step=0.50, key="preco_produto")
+
+        # Botão para adicionar o produto
+        if stl.button("Adicionar Produto"):
+            if nome and categoria and quantidade > 0 and preco >= 0:
+                stock.add_product(nome, categoria, quantidade, preco)
+            else:
+                stl.error("Por favor, preencha todos os campos corretamente.")
+
+    if menu == "Remover Produto":
+        stl.header("Remover Produto")
+
+        id = stl.text_input("ID do Produto", key="ID_produto")
+
+        if stl.button("Remover Produto"):
+            stock.remove_product(id)
+
+    if stl.button("Listar Produtos"):
+        
+        products = stock.get_all_products()
+        show_products(products)
+
+
+def graph():
+
+    # Opções de personalização definidas diretamente no código
+    edge_color = "#FFD700"  # Cor das arestas
+    node_color = "#36A2EB"  # Cor dos nós
+    text_color = "#F4E04D"  # Cor do texto da distância
+    node_text_color = "#FFFFFF"  # Cor do texto dentro dos nós
+    bg_color = "#0e1117"    # Cor do fundo
+    font_size = 15        # Tamanho da fonte
+    edge_width = 4        # Grossura das arestas
+    node_size = 60       # Tamanho dos nós
+    layout_type = "circular"  # Tipo de layout
+    box_color = "#0e1117"  # Cor da caixa de fundo para as distâncias
+    box_size = (10, 20)  # Tamanho da caixa de fundo (largura, altura)
+
+    # Exemplo de lista de arestas
+    edge = [
+    ('Arroz', 'Feijão', 2),
+    ('Feijão', 'Açúcar', 1),
+    ('Açúcar', 'Macarrão', 3),
+    ('Macarrão', 'Sal', 2),
+    ('Sal', 'Óleo', 5),
+    ('Óleo', 'Leite', 5),
+    ('Leite', 'Queijo', 1),
+    ('Queijo', 'Pão', 2),
+    ('Pão', 'Presunto', 3),
+    ('Presunto', 'Biscoito', 1),
+    ('Biscoito', 'Chocolates', 2)
+]
+
+    graph = get_graph(edge)
+
+    # Plotar o grafo com as configurações
+    fig = plot_grafo(graph, edge_color, node_color, bg_color, font_size, layout_type, text_color, edge_width, node_size, box_color, box_size, node_text_color,  1080, 600)
+
+    stl.title("Grafo da melhor rota:")
+    stl.plotly_chart(fig)
 
 def main():
-    stock = Stock()
 
-    while True:
-        action = input(
-            "Digite 1 - para adicionar, remover ou atualizar produtos,\n"
-            "Digite 2 - para buscar produto, por categoria, por quantidade,\n"
-            "Digite 3 - para listar os produtos,\n"
-            "Digite 4 - para vender um produto, \n"
-            "Digite Q - para sair."
-            ).upper()
+    functions()
 
-        print("-" * 75)
-
-        if action == "1":
-            while True:
-                subaction = input(
-                    "Digite 1 - para adicionar um produto,\n"
-                    "Digite 2 - para remover um produto,\n"
-                    "Digite 3 - para atualizar um produto,\n"
-                    "Digite Q - para sair."
-                    ).upper()
-                
-                print("-" * 75)
-            
-                if subaction == "1":    
-                    name = input("Digite o nome do produto: ")
-                    category = input("Digite a categoria do produto: ")
-                    quantity = int(input("Digite a quantidade do produto: "))
-                    price = float(input("Digite o preço do produto: "))
-                    stock.add_product(name, category, quantity, price)
-                    print("-" * 75)
-
-                elif subaction == "2":
-                    id = int(input("Digite o ID do produto a ser removido: "))
-                    stock.remove_product(id)
-                    print("-" * 75)
-
-                elif subaction == "3":
-                    product_id = int(input("Digite o id do produto a ser atualizado: "))
-                    stock.update_product(product_id)
-
-                elif subaction == "Q":
-                    break
-
-                else:
-                    print("Ação inválida.")
-
-        elif action == "2":
-            while True:
-                subaction = input(
-                    "Digite 1 - para buscar um produto,\n"
-                    "Digite 2 - para buscar por categoria,\n"
-                    "Digite Q - para sair."
-                    ).upper()
-                
-                print("-" * 75)
-                
-                if subaction == "1":
-                    product_name = input("Digite o nome do produto a ser encontrado: ")
-                    product = stock.get_product_by_name(product_name)
-                    if product:
-                        print("-" * 75)
-                        print(f"ID: {product.id}, Nome: {product.name}, Categoria: {product.category.name}, Quantidade: {product.quantity}, Preço: {product.price}")
-                        print("-" * 75)
-                    else:
-                        print("Nenhum produto encontrado.")
-
-                elif subaction == "2":
-                    product_category = input("Digite a categoria do produto a ser encontrado: ")
-                    products = stock.get_products_by_category(product_category)
-                    if not products:
-                        print("Nenhum produto encontrado.")
-                    else:
-                        print("Relatório dos produtos")
-                        print("-" * 75)
-                        for product in products:
-                            print(f"ID: {product.id}, Nome: {product.name}, Categoria: {product.category}, Quantidade: {product.quantity}, Preço: {product.price}")
-                        print("-" * 75)
-
-                elif subaction == "Q":
-                    break
-
-                else:
-                    print("Ação inválida.")
-
-        elif action == "3":
-            while True:
-
-                subaction = input("Digite 1 - para listar produtos,\n"
-                            "Digite 2 - para listar produtos por quantidade,\n"
-                            "Digite 3 - para listar produtos por preço,\n"
-                            "Digite Q - para sair."
-                            ).upper()
-                
-                print("-" * 89)
-
-                if subaction == "1":
-                    products = stock.get_all_products()
-                    if not products:
-                        print("Nenhum produto encontrado.")
-                    else:
-                        print("Relatório dos produtos")
-                        mensage(products)
-        
-                elif subaction == "2":
-                    ordered_list = stock.order_by_quantity()   
-                    if not ordered_list:
-                        print("Nenhum produto encontrado.")
-                    else:
-                        print("Relatório dos produtos ordenados por quantidade")
-                        mensage(ordered_list)
-
-                elif subaction == "3":
-                    product_name = input("Digite o nome do produto: ")
-                    ordered_list = stock.get_products_by_price(product_name)
-                       
-                    if not ordered_list:
-                        print("Nenhum produto encontrado.")
-                    else:
-                        print("Relatório dos produtos ordenados por preço")
-                        mensage(ordered_list)
-                
-                elif subaction == "Q":
-                    break
-
-                else:
-                    print("Ação inválida.")
-
-        elif action == "4":
-            product_id = int(input("Insira o id do produto a ser vendido: "))
-            amount = int(input("Insira a quantidade que você quer vender: "))
-
-            stock.register_sale(product_id, amount)
-
-        elif action == "Q":
-            break
-
-        else:
-            print("Ação inválida.")
+    graph()
 
 if __name__ == "__main__":
     main()
-    
-    
+
+
+
+
+
+
+
+
