@@ -12,6 +12,19 @@ class Product:
     def __str__(self) -> str:
         return f'Product:[id={self.id}, name={self.name}, category={self.category.name}, quantity={self.quantity}, price={self.price}, sales={self.sales}]'
     
+    def __repr__(self) -> str:
+        return f'Product(id={self.id}, name={self.name}, category={self.category.name}, quantity={self.quantity}, price={self.price}, sales={self.sales})'
+    
     def sale(self, amount):
         self.sales += amount
         self.quantity = max(0, self.quantity - amount)
+
+    def to_dict(self):
+        return {
+            'ID': self.id,
+            'Nome': self.name,
+            'Categoria': self.category.name,
+            'Quantidade': self.quantity,
+            'Preço': self.price,
+            'Vendas': self.sales
+        }
