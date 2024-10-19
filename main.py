@@ -2,115 +2,138 @@ from store import Store
 from estoque import Stock
 import streamlit as stl
 import plotly.graph_objs as go
-import numpy as np
+import networkx as nx
 
-def mensage(products):
-        print("-" * 89)
-        print(f"|{'ID':<5}|{'Nome':<20}|{'Categoria':<20}|{'Quantidade':<12}|{'Preço':<12}||{'Vendas':<12}|")
-        print("-" * 89)
-        for product in products:
-            print(f"|{product.id:<5}|{product.name:<20}|{product.category.name:<20}|{product.quantity:<12}|{product.price:<12}||{product.sales:<12}|")
-        print("-" * 89)
+def get_graph(arestas):
+    graph = nx.Graph()
+    
+    for first_product, last_product, distance in arestas:
+        graph.add_edge(first_product, last_product, weight=distance)
 
-def plot_grafo(grafo, bg_color, font_size):
-    # Extraindo nós únicos
-    nodes = list(set([item for edge in grafo for item in edge[:2]]))
-    
-    # Gerar posições circulares para os nós
-    theta = np.linspace(0, 2 * np.pi, len(nodes), endpoint=False)  # Ângulos para o layout circular
-    radius = 1  # Definindo um raio
-    node_pos = {node: (radius * np.cos(angle), radius * np.sin(angle)) for node, angle in zip(nodes, theta)}
-    
-    # Criar as coordenadas das arestas e pesos (distâncias)
+    return graph
+
+def plot_grafo(graph, edge_color, node_color, bg_color, font_size, layout_type, text_color, edge_width, node_size, box_color, box_size, node_text_color, width, height):
+    # Determinar o layout com base na escolha do usuário
+    if layout_type == "spring":
+        pos = nx.spring_layout(graph)
+    elif layout_type == "circular":
+        pos = nx.circular_layout(graph)
+    elif layout_type == "random":
+        pos = nx.random_layout(graph)
+    elif layout_type == "shell":
+        pos = nx.shell_layout(graph)
+    else:
+        pos = nx.spring_layout(graph)  # Padrão se o layout não for reconhecido
+
+    # Criar listas para as coordenadas das arestas
     edge_x = []
     edge_y = []
-    edge_text = []
-    for edge in grafo:
-        x0, y0 = node_pos[edge[0]]
-        x1, y1 = node_pos[edge[1]]
-        edge_x.extend([x0, x1, None])
-        edge_y.extend([y0, y1, None])
-        
-        # Calculando a posição média e ajustando o texto para ficar um pouco acima da linha
-        x_text = (x0 + x1) / 2
-        y_text = (y0 + y1) / 2
-        offset = 0.1  # Ajuste vertical (acima da linha)
-        y_text += offset
-        edge_text.append((x_text, y_text, edge[2]))  # Posição do texto (distância)
+    edge_text = []  # Lista para armazenar os textos das distâncias
+    edges = list(graph.edges(data=True))  # Obter as arestas como uma lista
 
-    # Plotar as arestas (linhas entre os nós)
+    for edge in edges:
+        x0, y0 = pos[edge[0]]
+        x1, y1 = pos[edge[1]]
+        edge_x.extend([x0, x1, None])  # None para criar uma quebra na linha
+        edge_y.extend([y0, y1, None])
+        edge_text.append(f"{edge[2]['weight']}")  # Armazena a distância da aresta
+
+    # Criação das arestas
     edge_trace = go.Scatter(
         x=edge_x, y=edge_y,
-        line=dict(width=2, color='gray'),
+        line=dict(width=edge_width, color=edge_color),
         hoverinfo='none',
         mode='lines'
     )
 
-    # Criar a figura
-    fig = go.Figure(data=[edge_trace])
-
-    # Adicionar anotações para distâncias com deslocamento horizontal
-    for (x_text, y_text, distance) in edge_text:
-        fig.add_annotation(
-            x=x_text,
-            y=y_text,
-            text=str(distance),  
-            showarrow=False,
-            arrowhead=2,
-            ax=15,  # Ajuste horizontal (para a direita)
-            ay=-10,  # Ajuste vertical
-            font=dict(color='yellow', size=font_size)  # Cor e tamanho do texto
-        )
-
-    # Plotar os nós e os nomes dentro das bolas
-    node_x = [node_pos[node][0] for node in nodes]
-    node_y = [node_pos[node][1] for node in nodes]
+    # Criação dos nós
+    node_x = [pos[node][0] for node in graph.nodes()]
+    node_y = [pos[node][1] for node in graph.nodes()]
     node_trace = go.Scatter(
         x=node_x, y=node_y,
         mode='markers+text',
-        marker=dict(size=50, color='white', line=dict(width=2)),
-        text=[node for node in nodes],  # Nomes dos nós dentro das bolas
-        textposition="middle center",  # Centralizar o texto dentro das bolas
-        textfont=dict(size=14, color='black'),  # Texto branco dentro da bola
+        marker=dict(size=node_size, color=node_color, line=dict(width=2)),
+        text=[node for node in graph.nodes()],
+        textposition="middle center",  # Centraliza o texto dentro do nó
+        textfont=dict(size=font_size, color=node_text_color),  # Cor do texto do nó configurável
         hoverinfo='text'
     )
 
-    # Adicionar nós ao gráfico
-    fig.add_trace(node_trace)
+    # Criar a figura
+    fig = go.Figure(data=[edge_trace, node_trace])
 
-    # Ajustar os eixos para evitar deformação no layout circular
+    # Adicionar textos das distâncias com caixa de fundo
+    for i, text in enumerate(edge_text):
+        # Posicionar o texto no meio da aresta
+        x0, y0 = pos[edges[i][0]]
+        x1, y1 = pos[edges[i][1]]
+        x_text = (x0 + x1) / 2
+        y_text = (y0 + y1) / 2
+        
+        fig.add_annotation(
+            x=x_text,
+            y=y_text,
+            text=text,
+            showarrow=False,
+            font=dict(size=font_size, color=text_color),  # Cor do texto da distância configurável
+            bgcolor=box_color,  # Cor da caixa de fundo configurável
+            bordercolor="black",  # Cor da borda da caixa (não será visível com borderwidth=0)
+            borderwidth=0,  # Sem borda
+            borderpad=4,  # Preenchimento da borda
+            xref="x",  # Referência do eixo X
+            yref="y",  # Referência do eixo Y
+            width=box_size[0],  # Largura da caixa
+            height=box_size[1],  # Altura da caixa
+        )
+
     fig.update_layout(
-        showlegend=False,
-        xaxis=dict(showgrid=False, zeroline=False),
-        yaxis=dict(showgrid=False, zeroline=False),
+        showlegend=False, hovermode='closest',
+        margin=dict(l=0, r=0, t=0, b=0),
+        xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+        yaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
         plot_bgcolor=bg_color,  # Cor de fundo configurada pelo usuário
-        paper_bgcolor=bg_color,  # Cor de fundo do papel configurada pelo usuário
-        margin=dict(b=20, l=5, r=5, t=40),
-        xaxis_range=[-1.5, 1.5],
-        yaxis_range=[-1.5, 1.5],
-        height=600, width=600
+        width=1024,  # Largura da figura (definida diretamente no código)
+        height=768  # Altura da figura (definida diretamente no código)
     )
 
     return fig
 
 def main():
-    # Definir a interface do Streamlit
-    stl.title("Visualizador de Grafos com Distâncias")
+    
+    # Opções de personalização definidas diretamente no código
+    edge_color = "yellow"  # Cor das arestas
+    node_color = "white"  # Cor dos nós
+    text_color = "yellow"  # Cor do texto da distância
+    node_text_color = "black"  # Cor do texto dentro dos nós
+    bg_color = "#0e1117"    # Cor do fundo
+    font_size = 25        # Tamanho da fonte
+    edge_width = 4        # Grossura das arestas
+    node_size = 100        # Tamanho dos nós
+    layout_type = "circular"  # Tipo de layout
+    box_color = "#0e1117"  # Cor da caixa de fundo para as distâncias
+    box_size = (20, 20)  # Tamanho da caixa de fundo (largura, altura)
 
-    # Lista de arestas com distâncias (exemplo)
-    grafo = [ ('arroz', 'feijão', 5), ('Leite', 'café', 4), ('café', 'feijão', 1)]
+    # Exemplo de lista de arestas
+    edge = [
+        ('Arroz', 'Feijão', 1), 
+        ('Feijão', 'Açúcar', 2), 
+        ('Açúcar', 'Macarrão', 1), 
+        ('Macarrão', 'Óleo', 3)
+    ]
+    
+    graph = get_graph(edge)
 
-    bg_color = "#363636"
-
-    font_size = 25
-
-    # Plotar o grafo
-    fig = plot_grafo(grafo, bg_color, font_size)
-
-    # Exibir o gráfico no Streamlit
+    # Plotar o grafo com as configurações
+    fig = plot_grafo(graph, edge_color, node_color, bg_color, font_size, layout_type, text_color, edge_width, node_size, box_color, box_size, node_text_color, 800, 600)  
     stl.plotly_chart(fig)
 
 if __name__ == "__main__":
     main()
-    
-    
+
+
+
+
+
+
+
+
