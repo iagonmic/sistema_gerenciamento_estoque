@@ -1,4 +1,8 @@
+from store import Store
 from estoque import Stock
+import streamlit as stl
+import plotly.graph_objs as go
+import numpy as np
 
 def mensage(products):
         print("-" * 89)
@@ -8,146 +12,103 @@ def mensage(products):
             print(f"|{product.id:<5}|{product.name:<20}|{product.category.name:<20}|{product.quantity:<12}|{product.price:<12}||{product.sales:<12}|")
         print("-" * 89)
 
-def main():
-    stock = Stock()
-
-    while True:
-        action = input(
-            "Digite 1 - para adicionar, remover ou atualizar produtos,\n"
-            "Digite 2 - para buscar produto, por categoria, por quantidade,\n"
-            "Digite 3 - para listar os produtos,\n"
-            "Digite 4 - para vender um produto, \n"
-            "Digite Q - para sair."
-            ).upper()
-
-        print("-" * 75)
-
-        if action == "1":
-            while True:
-                subaction = input(
-                    "Digite 1 - para adicionar um produto,\n"
-                    "Digite 2 - para remover um produto,\n"
-                    "Digite 3 - para atualizar um produto,\n"
-                    "Digite Q - para sair."
-                    ).upper()
-                
-                print("-" * 75)
-            
-                if subaction == "1":    
-                    name = input("Digite o nome do produto: ")
-                    category = input("Digite a categoria do produto: ")
-                    quantity = int(input("Digite a quantidade do produto: "))
-                    price = float(input("Digite o preço do produto: "))
-                    stock.add_product(name, category, quantity, price)
-                    print("-" * 75)
-
-                elif subaction == "2":
-                    id = int(input("Digite o ID do produto a ser removido: "))
-                    stock.remove_product(id)
-                    print("-" * 75)
-
-                elif subaction == "3":
-                    product_id = int(input("Digite o id do produto a ser atualizado: "))
-                    stock.update_product(product_id)
-
-                elif subaction == "Q":
-                    break
-
-                else:
-                    print("Ação inválida.")
-
-        elif action == "2":
-            while True:
-                subaction = input(
-                    "Digite 1 - para buscar um produto,\n"
-                    "Digite 2 - para buscar por categoria,\n"
-                    "Digite Q - para sair."
-                    ).upper()
-                
-                print("-" * 75)
-                
-                if subaction == "1":
-                    product_name = input("Digite o nome do produto a ser encontrado: ")
-                    product = stock.get_product_by_name(product_name)
-                    if product:
-                        print("-" * 75)
-                        print(f"ID: {product.id}, Nome: {product.name}, Categoria: {product.category.name}, Quantidade: {product.quantity}, Preço: {product.price}")
-                        print("-" * 75)
-                    else:
-                        print("Nenhum produto encontrado.")
-
-                elif subaction == "2":
-                    product_category = input("Digite a categoria do produto a ser encontrado: ")
-                    products = stock.get_products_by_category(product_category)
-                    if not products:
-                        print("Nenhum produto encontrado.")
-                    else:
-                        print("Relatório dos produtos")
-                        print("-" * 75)
-                        for product in products:
-                            print(f"ID: {product.id}, Nome: {product.name}, Categoria: {product.category}, Quantidade: {product.quantity}, Preço: {product.price}")
-                        print("-" * 75)
-
-                elif subaction == "Q":
-                    break
-
-                else:
-                    print("Ação inválida.")
-
-        elif action == "3":
-            while True:
-
-                subaction = input("Digite 1 - para listar produtos,\n"
-                            "Digite 2 - para listar produtos por quantidade,\n"
-                            "Digite 3 - para listar produtos por preço,\n"
-                            "Digite Q - para sair."
-                            ).upper()
-                
-                print("-" * 89)
-
-                if subaction == "1":
-                    products = stock.get_all_products()
-                    if not products:
-                        print("Nenhum produto encontrado.")
-                    else:
-                        print("Relatório dos produtos")
-                        mensage(products)
+def plot_grafo(grafo, bg_color, font_size):
+    # Extraindo nós únicos
+    nodes = list(set([item for edge in grafo for item in edge[:2]]))
+    
+    # Gerar posições circulares para os nós
+    theta = np.linspace(0, 2 * np.pi, len(nodes), endpoint=False)  # Ângulos para o layout circular
+    radius = 1  # Definindo um raio
+    node_pos = {node: (radius * np.cos(angle), radius * np.sin(angle)) for node, angle in zip(nodes, theta)}
+    
+    # Criar as coordenadas das arestas e pesos (distâncias)
+    edge_x = []
+    edge_y = []
+    edge_text = []
+    for edge in grafo:
+        x0, y0 = node_pos[edge[0]]
+        x1, y1 = node_pos[edge[1]]
+        edge_x.extend([x0, x1, None])
+        edge_y.extend([y0, y1, None])
         
-                elif subaction == "2":
-                    ordered_list = stock.order_by_quantity()   
-                    if not ordered_list:
-                        print("Nenhum produto encontrado.")
-                    else:
-                        print("Relatório dos produtos ordenados por quantidade")
-                        mensage(ordered_list)
+        # Calculando a posição média e ajustando o texto para ficar um pouco acima da linha
+        x_text = (x0 + x1) / 2
+        y_text = (y0 + y1) / 2
+        offset = 0.1  # Ajuste vertical (acima da linha)
+        y_text += offset
+        edge_text.append((x_text, y_text, edge[2]))  # Posição do texto (distância)
 
-                elif subaction == "3":
-                    product_name = input("Digite o nome do produto: ")
-                    ordered_list = stock.get_products_by_price(product_name)
-                       
-                    if not ordered_list:
-                        print("Nenhum produto encontrado.")
-                    else:
-                        print("Relatório dos produtos ordenados por preço")
-                        mensage(ordered_list)
-                
-                elif subaction == "Q":
-                    break
+    # Plotar as arestas (linhas entre os nós)
+    edge_trace = go.Scatter(
+        x=edge_x, y=edge_y,
+        line=dict(width=2, color='gray'),
+        hoverinfo='none',
+        mode='lines'
+    )
 
-                else:
-                    print("Ação inválida.")
+    # Criar a figura
+    fig = go.Figure(data=[edge_trace])
 
-        elif action == "4":
-            product_id = int(input("Insira o id do produto a ser vendido: "))
-            amount = int(input("Insira a quantidade que você quer vender: "))
+    # Adicionar anotações para distâncias com deslocamento horizontal
+    for (x_text, y_text, distance) in edge_text:
+        fig.add_annotation(
+            x=x_text,
+            y=y_text,
+            text=str(distance),  
+            showarrow=False,
+            arrowhead=2,
+            ax=15,  # Ajuste horizontal (para a direita)
+            ay=-10,  # Ajuste vertical
+            font=dict(color='yellow', size=font_size)  # Cor e tamanho do texto
+        )
 
-            stock.register_sale(product_id, amount)
+    # Plotar os nós e os nomes dentro das bolas
+    node_x = [node_pos[node][0] for node in nodes]
+    node_y = [node_pos[node][1] for node in nodes]
+    node_trace = go.Scatter(
+        x=node_x, y=node_y,
+        mode='markers+text',
+        marker=dict(size=50, color='white', line=dict(width=2)),
+        text=[node for node in nodes],  # Nomes dos nós dentro das bolas
+        textposition="middle center",  # Centralizar o texto dentro das bolas
+        textfont=dict(size=14, color='black'),  # Texto branco dentro da bola
+        hoverinfo='text'
+    )
 
-        elif action == "Q":
-            break
+    # Adicionar nós ao gráfico
+    fig.add_trace(node_trace)
 
-        else:
-            print("Ação inválida.")
+    # Ajustar os eixos para evitar deformação no layout circular
+    fig.update_layout(
+        showlegend=False,
+        xaxis=dict(showgrid=False, zeroline=False),
+        yaxis=dict(showgrid=False, zeroline=False),
+        plot_bgcolor=bg_color,  # Cor de fundo configurada pelo usuário
+        paper_bgcolor=bg_color,  # Cor de fundo do papel configurada pelo usuário
+        margin=dict(b=20, l=5, r=5, t=40),
+        xaxis_range=[-1.5, 1.5],
+        yaxis_range=[-1.5, 1.5],
+        height=600, width=600
+    )
+
+    return fig
+
+def main():
+    # Definir a interface do Streamlit
+    stl.title("Visualizador de Grafos com Distâncias")
+
+    # Lista de arestas com distâncias (exemplo)
+    grafo = [ ('arroz', 'feijão', 5), ('Leite', 'café', 4), ('café', 'feijão', 1)]
+
+    bg_color = "#363636"
+
+    font_size = 25
+
+    # Plotar o grafo
+    fig = plot_grafo(grafo, bg_color, font_size)
+
+    # Exibir o gráfico no Streamlit
+    stl.plotly_chart(fig)
 
 if __name__ == "__main__":
     main()
