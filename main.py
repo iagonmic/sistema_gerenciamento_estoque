@@ -5,9 +5,6 @@ import plotly.graph_objs as go
 import networkx as nx
 import pandas as pd
 
-stock = Stock()
-store = Store(stock)
-
 def show_products(products):
     # Converte os objetos Product para uma lista de dicionários
     product_dicts = [product.to_dict() for product in products]
@@ -112,20 +109,17 @@ def plot_grafo(graph, edge_color, node_color, bg_color, font_size, layout_type, 
     )
 
     return fig
+    
 
-def functions():
+def functions(stock:Stock, store:Store):
 
     stl.title("Gerenciador de Produtos")
+    stl.expander('Seja bem-vindo(a) ao nosso gerenciador de produtos! Escolha uma função para começar:')
 
-# Menu de navegação
+    # Menu de navegação
     menu = stl.sidebar.selectbox("Escolha uma opção", ["Adicionar Produto","Remover Produto"])
 
-    categories = []
-
-    for key in stock.sections_by_category.keys():
-        categories.append(key.name)
-
-    print(categories)
+    categories = [key.name for key in stock.sections_by_category.keys()]
 
     if menu == "Adicionar Produto":
         stl.header("Adicionar Produto")
@@ -194,19 +188,15 @@ def graph():
     stl.title("Grafo da melhor rota:")
     stl.plotly_chart(fig)
 
-def main():
+def main(stock, store):
+    stock = Stock()
+    store = Store(stock)
 
-    functions()
-
+    stl.title("Gerenciador de Produtos")
+    stl.expander('Seja bem-vindo(a) ao nosso gerenciador de produtos! Escolha uma função para começar:')
+    
+    functions(store)
     graph()
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
-
-
-
