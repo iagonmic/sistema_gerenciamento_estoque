@@ -18,6 +18,31 @@ def show_products(products):
     # Exibe o DataFrame no Streamlit
     stl.dataframe(df, hide_index=True, height=400, width= 1200)
 
+def create_edge(products):
+    edge = []
+
+    for i in range(len(products) - 1):
+        current_name = products[i].name
+        next_name = products[i + 1].name
+        distance = store.get_node_distance(products[i], products[i+1])
+
+        tuple_edge = (current_name, next_name, distance)
+
+        edge.append(tuple_edge)
+
+    return edge
+
+def order_list(initial_list, product_name):
+    product_index = initial_list.index(product_name)
+
+    first_item = initial_list[product_index]
+    change_item = initial_list[0]
+
+    initial_list[0] = first_item
+    initial_list[product_index] = change_item
+
+    return initial_list
+
 def get_graph(arestas):
     graph = nx.Graph()
     
@@ -156,7 +181,7 @@ def functions():
         show_products(products)
 
 
-def graph():
+def graph(edge, lista):
 
     # Opções de personalização definidas diretamente no código
     edge_color = "#FFD700"  # Cor das arestas
@@ -172,33 +197,55 @@ def graph():
     box_size = (10, 20)  # Tamanho da caixa de fundo (largura, altura)
 
     # Exemplo de lista de arestas
-    edge = [
-    ('Arroz', 'Feijão', 2),
-    ('Feijão', 'Açúcar', 1),
-    ('Açúcar', 'Macarrão', 3),
-    ('Macarrão', 'Sal', 2),
-    ('Sal', 'Óleo', 5),
-    ('Óleo', 'Leite', 5),
-    ('Leite', 'Queijo', 1),
-    ('Queijo', 'Pão', 2),
-    ('Pão', 'Presunto', 3),
-    ('Presunto', 'Biscoito', 1),
-    ('Biscoito', 'Chocolates', 2)
-]
+    #edge = [
+    #('Arroz', 'Feijão', 2),
+    #('Feijão', 'Açúcar', 1),
+    #('Açúcar', 'Macarrão', 3),
+    #('Macarrão', 'Sal', 2),
+    #('Sal', 'Óleo', 5),
+    #('Óleo', 'Leite', 5),
+    #('Leite', 'Queijo', 1),
+    #('Queijo', 'Pão', 2),
+    #('Pão', 'Presunto', 3),
+    #('Presunto', 'Biscoito', 1),
+    #('Biscoito', 'Chocolates', 2)
+#]
 
     graph = get_graph(edge)
 
     # Plotar o grafo com as configurações
     fig = plot_grafo(graph, edge_color, node_color, bg_color, font_size, layout_type, text_color, edge_width, node_size, box_color, box_size, node_text_color,  1080, 600)
 
-    stl.title("Grafo da melhor rota:")
+    first_product = lista[0]
+
+    stl.title(f"Grafo da melhor rota para {first_product}:")
     stl.plotly_chart(fig)
 
 def main():
 
-    functions()
+    #functions()
 
-    graph()
+    #graph()
+
+    lista = ['Maquiagem', 'Feijão', 'Macarrão', 'Presunto', 'Arroz', 'Manteiga', 'Sabão em Pó', 'Perfume']
+
+    order_list(lista, "Feijão")
+
+    product_list = [stock.get_product_by_name(product) for product in lista]
+
+    result, result2 = store.calculate_dijkstra(product_list)
+
+    print(result) 
+    print(result2)
+
+    edge = create_edge(result2)
+
+    print(edge)
+
+    graph(edge, lista)
+
+
+
 
 if __name__ == "__main__":
     main()
