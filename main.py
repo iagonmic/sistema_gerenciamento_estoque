@@ -18,6 +18,43 @@ def show_products(products):
     # Exibe o DataFrame no Streamlit
     stl.dataframe(df, hide_index=True, height=400, width= 1200)
 
+def show_products_by_category(products, category):
+    # Converte os objetos Product para uma lista de dicionários
+    product_dicts = [product.to_dict() for product in products]
+    
+    # Cria o DataFrame
+    df = pd.DataFrame(product_dicts).sort_values("ID")
+
+    df = df.query(f"Categoria=='{category}'")
+    
+    # Exibe o DataFrame no Streamlit
+    stl.dataframe(df, hide_index=True, height=400, width= 1200)
+
+def create_edge(products):
+    edge = []
+
+    for i in range(len(products) - 1):
+        current_name = products[i].name
+        next_name = products[i + 1].name
+        distance = store.get_node_distance(products[i], products[i+1])
+
+        tuple_edge = (current_name, next_name, distance)
+
+        edge.append(tuple_edge)
+
+    return edge
+
+def order_list(initial_list, product_name):
+    product_index = initial_list.index(product_name)
+
+    first_item = initial_list[product_index]
+    change_item = initial_list[0]
+
+    initial_list[0] = first_item
+    initial_list[product_index] = change_item
+
+    return initial_list
+
 def get_graph(arestas):
     graph = nx.Graph()
     
@@ -118,7 +155,7 @@ def functions():
     stl.title("Gerenciador de Produtos")
 
 # Menu de navegação
-    menu = stl.sidebar.selectbox("Escolha uma opção", ["Adicionar Produto","Remover Produto"])
+    menu = stl.sidebar.selectbox("Escolha uma opção", ["Adicionar Produto","Remover Produto","Atualizar Produto","Listar Produtos", "Calcular Rota"])
 
     categories = []
 
@@ -126,6 +163,11 @@ def functions():
         categories.append(key.name)
 
     print(categories)
+
+    if 'saved_products' not in stl.session_state:
+            stl.session_state.saved_products = []
+
+    products = [product.name for product in stock.get_all_products()]
 
     if menu == "Adicionar Produto":
         stl.header("Adicionar Produto")
@@ -150,13 +192,131 @@ def functions():
         if stl.button("Remover Produto"):
             stock.remove_product(id)
 
-    if stl.button("Listar Produtos"):
-        
+    if menu == "Atualizar Produto":
+        stl.title("Atualizar Produto")
+
+        stl.header("Seleção do Produto")
+
+        selected_product = stl.selectbox(
+            "Escolha o produto que deseja atualizar",
+            options=products
+        )
+
+        # Verifica se um produto foi selecionado
+        if selected_product:
+            product = stock.get_product_by_name(str(selected_product))
+
+            options_update = ["Atualizar Nome", "Atualizar Categoria", "Atualizar Quantidade", "Atualizar Preço"]
+            menu_update = stl.selectbox("Escolha o que deseja alterar", options=options_update)
+
+            # Para garantir que os valores persistam ao trocar de campos
+            if 'selected_option' not in stl.session_state:
+                stl.session_state.selected_option = None
+
+            # Atualiza o estado da opção selecionada
+            stl.session_state.selected_option = menu_update
+
+            # Atualiza Nome
+            if stl.session_state.selected_option == "Atualizar Nome":
+                new_name = stl.text_input("Nome do Produto", key="nome_produto")
+                if stl.button("Salvar Nome"):
+                    stock.update_product(product.id, "1", new_name)
+                    stl.success(f"Nome do produto atualizado para {new_name}")
+
+            # Atualiza Categoria
+            elif stl.session_state.selected_option == "Atualizar Categoria":
+                new_category = stl.text_input("Categoria do Produto", key="categoria_produto")
+                if stl.button("Salvar Categoria"):
+                    stock.update_product(product.id, "2", new_category)
+                    stl.success(f"Categoria do produto atualizada para {new_category}")
+
+            # Atualiza Quantidade
+            elif stl.session_state.selected_option == "Atualizar Quantidade":
+                new_quantity = stl.number_input("Quantidade do Produto", min_value=1, step=1, key="quantidade_produto")
+                if stl.button("Salvar Quantidade"):
+                    stock.update_product(product.id, "3", new_quantity)
+                    stl.success(f"Quantidade do produto atualizada para {new_quantity}")
+
+            # Atualiza Preço
+            elif stl.session_state.selected_option == "Atualizar Preço":
+                new_price = stl.number_input("Preço do Produto", min_value=1.0, step=0.01, key="preco_produto")
+                if stl.button("Salvar Preço"):
+                    stock.update_product(product.id, "4", new_price)
+                    stl.success(f"Preço do produto atualizado para {new_price}")
+
+
+
+    if menu == "Calcular Rota":
+        stl.title("Calcular Rota")
+
+        stl.header("Seleção de Produtos")
+
+        selected_products = stl.multiselect(
+            "Escolha os produtos que deseja adicionar à lista",
+            options=products
+        )
+
+        # Botão para salvar a seleção
+        if stl.button("Salvar seleção"):
+            stl.session_state.saved_products = []
+
+            # Adiciona os produtos selecionados à lista de salvos
+            stl.session_state.saved_products.extend(selected_products)
+            # Remove duplicatas
+            stl.session_state.saved_products = list(set(stl.session_state.saved_products))
+            stl.success(f"Produtos salvos: {', '.join(selected_products)}")
+
+        # Exibe os produtos salvos
+        if 'saved_products' in stl.session_state and stl.session_state.saved_products:
+            stl.write("Lista de produtos salvos:")
+            stl.write(stl.session_state.saved_products)
+
+            # Select box para escolher o primeiro produto
+            first_product = stl.selectbox('Selecione o primeiro produto da lista:', stl.session_state.saved_products)
+
+            # Botão para atualizar o gráfico com a nova seleção
+            if stl.button("Atualizar Gráfico"):
+                # Chama a função order_list e atualiza a lista de produtos
+                ordered_product_list = order_list(stl.session_state.saved_products, str(first_product))  # Organiza a lista
+
+                # Atualiza o gráfico com a lista ordenada
+                product_list = [stock.get_product_by_name(product) for product in ordered_product_list]
+
+                # Calcule o Dijkstra
+                _, dijkstra = store.calculate_dijkstra(product_list)
+                edge = create_edge(dijkstra)
+
+                # Atualiza o gráfico
+                graph(edge, ordered_product_list)
+
+                # Exibe a lista ordenada
+                stl.write(f"Lista de produtos ordenada com {first_product} como o primeiro produto.")
+
+        else:
+            stl.write("Nenhum produto salvo ainda.")
+
+    if menu == "Listar Produtos":
+
+        actions = ["Listar todos Produtos", "Listar por Categoria"]
+
+        action_selectbox = stl.selectbox("Escolha o Método de busca", options=actions)
+
         products = stock.get_all_products()
-        show_products(products)
+
+        if action_selectbox == "Listar todos Produtos":
+            show_products(products)
+
+        if action_selectbox == "Listar por Categoria":
+            category = stl.selectbox("Escolha a categoria", options=categories)
+
+            # Atualiza automaticamente ao selecionar a categoria
+            if category:
+                show_products_by_category(products, category)
 
 
-def graph():
+
+
+def graph(edge, lista):
 
     # Opções de personalização definidas diretamente no código
     edge_color = "#FFD700"  # Cor das arestas
@@ -171,34 +331,19 @@ def graph():
     box_color = "#0e1117"  # Cor da caixa de fundo para as distâncias
     box_size = (10, 20)  # Tamanho da caixa de fundo (largura, altura)
 
-    # Exemplo de lista de arestas
-    edge = [
-    ('Arroz', 'Feijão', 2),
-    ('Feijão', 'Açúcar', 1),
-    ('Açúcar', 'Macarrão', 3),
-    ('Macarrão', 'Sal', 2),
-    ('Sal', 'Óleo', 5),
-    ('Óleo', 'Leite', 5),
-    ('Leite', 'Queijo', 1),
-    ('Queijo', 'Pão', 2),
-    ('Pão', 'Presunto', 3),
-    ('Presunto', 'Biscoito', 1),
-    ('Biscoito', 'Chocolates', 2)
-]
-
     graph = get_graph(edge)
 
     # Plotar o grafo com as configurações
     fig = plot_grafo(graph, edge_color, node_color, bg_color, font_size, layout_type, text_color, edge_width, node_size, box_color, box_size, node_text_color,  1080, 600)
 
-    stl.title("Grafo da melhor rota:")
+    first_product = lista[0]
+
+    stl.title(f"Grafo da melhor rota para {first_product}:")
     stl.plotly_chart(fig)
 
 def main():
 
     functions()
-
-    graph()
 
 if __name__ == "__main__":
     main()
