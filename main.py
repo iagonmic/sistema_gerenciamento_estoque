@@ -5,16 +5,6 @@ import plotly.graph_objs as go
 import networkx as nx
 import pandas as pd
 
-def show_products(products):
-    # Converte os objetos Product para uma lista de dicionários
-    product_dicts = [product.to_dict() for product in products]
-    
-    # Cria o DataFrame
-    df = pd.DataFrame(product_dicts).sort_values("ID")
-    
-    # Exibe o DataFrame no Streamlit
-    stl.dataframe(df, hide_index=True, height=400, width= 1200)
-
 def get_graph(arestas):
     graph = nx.Graph()
     
@@ -109,45 +99,52 @@ def plot_grafo(graph, edge_color, node_color, bg_color, font_size, layout_type, 
     )
 
     return fig
+
+def home():
+    stl.title(":package: Bem-vindo(a) ao Sistema de Gerenciamento de Estoque!")
+    stl.subheader('Use o menu ao lado para navegar para outras páginas.')
+    stl.image('vegeta-careca.jpg')
+
+def add_product():
+    stl.header("Adicionar Produto")
+
+    categories = [key.name for key in stl.session_state.stock.sections_by_category.keys()]
+
+    # Campos para adicionar um produto com chaves únicas
+    nome = stl.text_input("Nome do Produto", key="nome_produto")
+    categoria = stl.selectbox("Categoria", categories, key="categoria_produto")
+    quantidade = stl.number_input("Quantidade", min_value=1, step=1, key="quantidade_produto")
+    preco = stl.number_input("Preço", min_value=0.0, step=0.50, key="preco_produto")
+
+    # Botão para adicionar o produto
+    if stl.button("Adicionar Produto"):
+        if nome and categoria and quantidade > 0 and preco >= 0:
+            stl.session_state.stock.add_product(nome, categoria, quantidade, preco)
+            show_products()
+
+        else:
+            stl.error("Por favor, preencha todos os campos corretamente.")
+
+
+def remove_product():
+    stl.header("Remover Produto")
+
+    id = stl.text_input("ID do Produto", key="ID_produto")
+
+    if stl.button("Remover Produto"):
+        stl.session_state.stock.remove_product(int(id))
+        show_products()
+
+
+def show_products():
+    # Converte os objetos Product para uma lista de dicionários
+    product_dicts = [product.to_dict() for product in stl.session_state.stock.get_all_products()]
     
-
-def functions(stock:Stock, store:Store):
-
-    stl.title("Gerenciador de Produtos")
-    stl.expander('Seja bem-vindo(a) ao nosso gerenciador de produtos! Escolha uma função para começar:')
-
-    # Menu de navegação
-    menu = stl.sidebar.selectbox("Escolha uma opção", ["Adicionar Produto","Remover Produto"])
-
-    categories = [key.name for key in stock.sections_by_category.keys()]
-
-    if menu == "Adicionar Produto":
-        stl.header("Adicionar Produto")
-        # Campos para adicionar um produto com chaves únicas
-        nome = stl.text_input("Nome do Produto", key="nome_produto")
-        categoria = stl.selectbox("Categoria", categories, key="categoria_produto")
-        quantidade = stl.number_input("Quantidade", min_value=1, step=1, key="quantidade_produto")
-        preco = stl.number_input("Preço", min_value=0.0, step=0.50, key="preco_produto")
-
-        # Botão para adicionar o produto
-        if stl.button("Adicionar Produto"):
-            if nome and categoria and quantidade > 0 and preco >= 0:
-                stock.add_product(nome, categoria, quantidade, preco)
-            else:
-                stl.error("Por favor, preencha todos os campos corretamente.")
-
-    if menu == "Remover Produto":
-        stl.header("Remover Produto")
-
-        id = stl.text_input("ID do Produto", key="ID_produto")
-
-        if stl.button("Remover Produto"):
-            stock.remove_product(id)
-
-    if stl.button("Listar Produtos"):
-        
-        products = stock.get_all_products()
-        show_products(products)
+    # Cria o DataFrame
+    df = pd.DataFrame(product_dicts).sort_values("ID")
+    
+    # Exibe o DataFrame no Streamlit
+    stl.dataframe(df, hide_index=True, height=500, width= 1300)
 
 
 def graph():
@@ -188,15 +185,36 @@ def graph():
     stl.title("Grafo da melhor rota:")
     stl.plotly_chart(fig)
 
-def main(stock, store):
-    stock = Stock()
-    store = Store(stock)
-
-    stl.title("Gerenciador de Produtos")
-    stl.expander('Seja bem-vindo(a) ao nosso gerenciador de produtos! Escolha uma função para começar:')
+def main():
+    if 'stock' not in stl.session_state:
+        stl.session_state['stock'] = Stock()
     
-    functions(store)
-    graph()
+    stl.set_page_config('Sistema de Gerenciamento de Estoque', ':package:')
+
+    pages = [
+        "Home",
+        "Adicionar Produto",
+        "Remover Produto",
+        "Listar Produtos",
+        "Grafo do Menor Caminho"
+    ]
+    
+    menu = stl.sidebar.selectbox("Escolha uma opção", pages)
+
+    if menu == "Home":
+        home()
+
+    elif menu == "Adicionar Produto":
+        add_product()
+
+    elif menu == "Remover Produto":
+        remove_product()
+
+    elif menu == "Listar Produtos":
+        show_products()
+
+    elif menu == "Grafo do Menor Caminho":
+        graph()
 
 if __name__ == "__main__":
     main()
