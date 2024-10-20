@@ -103,7 +103,7 @@ def plot_grafo(graph, edge_color, node_color, bg_color, font_size, layout_type, 
 def home():
     stl.title(":package: Bem-vindo(a) ao Sistema de Gerenciamento de Estoque!")
     stl.subheader('Use o menu ao lado para navegar para outras páginas.')
-    stl.image('vegeta-careca.jpg')
+    stl.image('img/vegeta-careca.png')
 
 def add_product():
     stl.header("Adicionar Produto")
