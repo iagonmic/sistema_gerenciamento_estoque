@@ -18,6 +18,18 @@ def show_products(products):
     # Exibe o DataFrame no Streamlit
     stl.dataframe(df, hide_index=True, height=400, width= 1200)
 
+def show_products_by_category(products, category):
+    # Converte os objetos Product para uma lista de dicionários
+    product_dicts = [product.to_dict() for product in products]
+    
+    # Cria o DataFrame
+    df = pd.DataFrame(product_dicts).sort_values("ID")
+
+    df = df.query(f"Categoria=='{category}'")
+    
+    # Exibe o DataFrame no Streamlit
+    stl.dataframe(df, hide_index=True, height=400, width= 1200)
+
 def create_edge(products):
     edge = []
 
@@ -143,7 +155,7 @@ def functions():
     stl.title("Gerenciador de Produtos")
 
 # Menu de navegação
-    menu = stl.sidebar.selectbox("Escolha uma opção", ["Adicionar Produto","Remover Produto", "Calcular Rota"])
+    menu = stl.sidebar.selectbox("Escolha uma opção", ["Adicionar Produto","Remover Produto","Atualizar Produto","Listar Produtos", "Calcular Rota"])
 
     categories = []
 
@@ -179,6 +191,60 @@ def functions():
 
         if stl.button("Remover Produto"):
             stock.remove_product(id)
+
+    if menu == "Atualizar Produto":
+        stl.title("Atualizar Produto")
+
+        stl.header("Seleção do Produto")
+
+        selected_product = stl.selectbox(
+            "Escolha o produto que deseja atualizar",
+            options=products
+        )
+
+        # Verifica se um produto foi selecionado
+        if selected_product:
+            product = stock.get_product_by_name(str(selected_product))
+
+            options_update = ["Atualizar Nome", "Atualizar Categoria", "Atualizar Quantidade", "Atualizar Preço"]
+            menu_update = stl.selectbox("Escolha o que deseja alterar", options=options_update)
+
+            # Para garantir que os valores persistam ao trocar de campos
+            if 'selected_option' not in stl.session_state:
+                stl.session_state.selected_option = None
+
+            # Atualiza o estado da opção selecionada
+            stl.session_state.selected_option = menu_update
+
+            # Atualiza Nome
+            if stl.session_state.selected_option == "Atualizar Nome":
+                new_name = stl.text_input("Nome do Produto", key="nome_produto")
+                if stl.button("Salvar Nome"):
+                    stock.update_product(product.id, "1", new_name)
+                    stl.success(f"Nome do produto atualizado para {new_name}")
+
+            # Atualiza Categoria
+            elif stl.session_state.selected_option == "Atualizar Categoria":
+                new_category = stl.text_input("Categoria do Produto", key="categoria_produto")
+                if stl.button("Salvar Categoria"):
+                    stock.update_product(product.id, "2", new_category)
+                    stl.success(f"Categoria do produto atualizada para {new_category}")
+
+            # Atualiza Quantidade
+            elif stl.session_state.selected_option == "Atualizar Quantidade":
+                new_quantity = stl.number_input("Quantidade do Produto", min_value=1, step=1, key="quantidade_produto")
+                if stl.button("Salvar Quantidade"):
+                    stock.update_product(product.id, "3", new_quantity)
+                    stl.success(f"Quantidade do produto atualizada para {new_quantity}")
+
+            # Atualiza Preço
+            elif stl.session_state.selected_option == "Atualizar Preço":
+                new_price = stl.number_input("Preço do Produto", min_value=1.0, step=0.01, key="preco_produto")
+                if stl.button("Salvar Preço"):
+                    stock.update_product(product.id, "4", new_price)
+                    stl.success(f"Preço do produto atualizado para {new_price}")
+
+
 
     if menu == "Calcular Rota":
         stl.title("Calcular Rota")
@@ -224,16 +290,29 @@ def functions():
                 graph(edge, ordered_product_list)
 
                 # Exibe a lista ordenada
-                stl.write(f"Lista de produtos ordenada com '{first_product}' como o primeiro: {ordered_product_list}")
+                stl.write(f"Lista de produtos ordenada com {first_product} como o primeiro produto.")
 
         else:
             stl.write("Nenhum produto salvo ainda.")
 
+    if menu == "Listar Produtos":
 
-    if stl.button("Listar Produtos"):
-        
+        actions = ["Listar todos Produtos", "Listar por Categoria"]
+
+        action_selectbox = stl.selectbox("Escolha o Método de busca", options=actions)
+
         products = stock.get_all_products()
-        show_products(products)
+
+        if action_selectbox == "Listar todos Produtos":
+            show_products(products)
+
+        if action_selectbox == "Listar por Categoria":
+            category = stl.selectbox("Escolha a categoria", options=categories)
+
+            # Atualiza automaticamente ao selecionar a categoria
+            if category:
+                show_products_by_category(products, category)
+
 
 
 
@@ -252,21 +331,6 @@ def graph(edge, lista):
     box_color = "#0e1117"  # Cor da caixa de fundo para as distâncias
     box_size = (10, 20)  # Tamanho da caixa de fundo (largura, altura)
 
-    # Exemplo de lista de arestas
-    #edge = [
-    #('Arroz', 'Feijão', 2),
-    #('Feijão', 'Açúcar', 1),
-    #('Açúcar', 'Macarrão', 3),
-    #('Macarrão', 'Sal', 2),
-    #('Sal', 'Óleo', 5),
-    #('Óleo', 'Leite', 5),
-    #('Leite', 'Queijo', 1),
-    #('Queijo', 'Pão', 2),
-    #('Pão', 'Presunto', 3),
-    #('Presunto', 'Biscoito', 1),
-    #('Biscoito', 'Chocolates', 2)
-#]
-
     graph = get_graph(edge)
 
     # Plotar o grafo com as configurações
@@ -280,28 +344,6 @@ def graph(edge, lista):
 def main():
 
     functions()
-
-    #graph()
-
-    #lista = ['Maquiagem', 'Feijão', 'Macarrão', 'Presunto', 'Arroz', 'Manteiga', 'Sabão em Pó', 'Perfume']
-
-    #order_list(lista, "Feijão")
-
-    #product_list = [stock.get_product_by_name(product) for product in lista]
-
-    #result, result2 = store.calculate_dijkstra(product_list)
-
-    #print(result) 
-    #print(result2)
-
-    #edge = create_edge(result2)
-
-    #print(edge)
-
-    #graph(edge, lista)
-
-
-
 
 if __name__ == "__main__":
     main()

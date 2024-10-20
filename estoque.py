@@ -142,29 +142,21 @@ class Stock:
 
         print(f"Produto '{product.name}' removido com sucesso.")
 
-    def update_product(self, id):
+    def update_product(self, id, action_command, new_value):
         product = self.get_product(id)
 
         if product is None:
+            print("Produto não encontrado.")
             return
         
-        for action in self.update_actions:
-            print(f"{action['action']}: {action['description']}")
-        
-        action_command = input("Insira o número de qual campo acima você quer alterar: ")
-        
-        action_object = None
-        for action in self.update_actions:
-            if action['action'] == action_command:
-                action_object = action
+        action_object = next((action for action in self.update_actions if action['action'] == action_command), None)
         
         if action_object is None:
-            print(f"Você inseriu uma ação inválida.")
-            self.update_product(id)
+            print("Ação inválida.")
             return
-
-        new_value = input("Insira o novo valor para o campo informado: ")
+        
         action_object['function'](product, new_value)
+        print(f"Produto {product.name} atualizado: {action_object['description']} para {new_value}")
 
     # Get product if exists by name
     def get_product_by_name(self, name):
