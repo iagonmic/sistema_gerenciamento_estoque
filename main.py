@@ -143,7 +143,7 @@ def functions():
     stl.title("Gerenciador de Produtos")
 
 # Menu de navegação
-    menu = stl.sidebar.selectbox("Escolha uma opção", ["Adicionar Produto","Remover Produto"])
+    menu = stl.sidebar.selectbox("Escolha uma opção", ["Adicionar Produto","Remover Produto", "Calcular Rota"])
 
     categories = []
 
@@ -151,6 +151,11 @@ def functions():
         categories.append(key.name)
 
     print(categories)
+
+    if 'saved_products' not in stl.session_state:
+            stl.session_state.saved_products = []
+
+    products = [product.name for product in stock.get_all_products()]
 
     if menu == "Adicionar Produto":
         stl.header("Adicionar Produto")
@@ -175,10 +180,61 @@ def functions():
         if stl.button("Remover Produto"):
             stock.remove_product(id)
 
+    if menu == "Calcular Rota":
+        stl.title("Calcular Rota")
+
+        stl.header("Seleção de Produtos")
+
+        selected_products = stl.multiselect(
+            "Escolha os produtos que deseja adicionar à lista",
+            options=products
+        )
+
+        # Botão para salvar a seleção
+        if stl.button("Salvar seleção"):
+            stl.session_state.saved_products = []
+
+            # Adiciona os produtos selecionados à lista de salvos
+            stl.session_state.saved_products.extend(selected_products)
+            # Remove duplicatas
+            stl.session_state.saved_products = list(set(stl.session_state.saved_products))
+            stl.success(f"Produtos salvos: {', '.join(selected_products)}")
+
+        # Exibe os produtos salvos
+        if 'saved_products' in stl.session_state and stl.session_state.saved_products:
+            stl.write("Lista de produtos salvos:")
+            stl.write(stl.session_state.saved_products)
+
+            # Select box para escolher o primeiro produto
+            first_product = stl.selectbox('Selecione o primeiro produto da lista:', stl.session_state.saved_products)
+
+            # Botão para atualizar o gráfico com a nova seleção
+            if stl.button("Atualizar Gráfico"):
+                # Chama a função order_list e atualiza a lista de produtos
+                ordered_product_list = order_list(stl.session_state.saved_products, str(first_product))  # Organiza a lista
+
+                # Atualiza o gráfico com a lista ordenada
+                product_list = [stock.get_product_by_name(product) for product in ordered_product_list]
+
+                # Calcule o Dijkstra
+                _, dijkstra = store.calculate_dijkstra(product_list)
+                edge = create_edge(dijkstra)
+
+                # Atualiza o gráfico
+                graph(edge, ordered_product_list)
+
+                # Exibe a lista ordenada
+                stl.write(f"Lista de produtos ordenada com '{first_product}' como o primeiro: {ordered_product_list}")
+
+        else:
+            stl.write("Nenhum produto salvo ainda.")
+
+
     if stl.button("Listar Produtos"):
         
         products = stock.get_all_products()
         show_products(products)
+
 
 
 def graph(edge, lista):
@@ -223,26 +279,26 @@ def graph(edge, lista):
 
 def main():
 
-    #functions()
+    functions()
 
     #graph()
 
-    lista = ['Maquiagem', 'Feijão', 'Macarrão', 'Presunto', 'Arroz', 'Manteiga', 'Sabão em Pó', 'Perfume']
+    #lista = ['Maquiagem', 'Feijão', 'Macarrão', 'Presunto', 'Arroz', 'Manteiga', 'Sabão em Pó', 'Perfume']
 
-    order_list(lista, "Feijão")
+    #order_list(lista, "Feijão")
 
-    product_list = [stock.get_product_by_name(product) for product in lista]
+    #product_list = [stock.get_product_by_name(product) for product in lista]
 
-    result, result2 = store.calculate_dijkstra(product_list)
+    #result, result2 = store.calculate_dijkstra(product_list)
 
-    print(result) 
-    print(result2)
+    #print(result) 
+    #print(result2)
 
-    edge = create_edge(result2)
+    #edge = create_edge(result2)
 
-    print(edge)
+    #print(edge)
 
-    graph(edge, lista)
+    #graph(edge, lista)
 
 
 
