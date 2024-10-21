@@ -1,4 +1,4 @@
 streamlit==1.39.0
 plotly==5.18.0
 networkx==3.4.1
-pandas
+pandas==2.2.2
