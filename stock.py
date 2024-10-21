@@ -1,4 +1,4 @@
-from produto import Product
+from product import Product
 from tree import Category, FinalCategory
 
 class Stock:
@@ -9,22 +9,22 @@ class Stock:
         self.sections_by_category = {}
         self.update_actions = [
             { 
-                "action": "1",
+                "action": "Nome",
                 "description": "Alterar o nome do produto.", 
                 "function": lambda product, new_value: setattr(product, 'name', new_value)
             },
             { 
-                "action": "2", 
+                "action": "Categoria", 
                 "description": "Alterar a categoria do produto.", 
                 "function": lambda product, new_value: setattr(product, 'category', new_value)
             },
             { 
-                "action": "3", 
+                "action": "Quantidade", 
                 "description": "Alterar a quantidade do produto.", 
                 "function": lambda product, new_value: setattr(product, 'quantity', int(new_value))
             },
             { 
-                "action": "4", 
+                "action": "Preço", 
                 "description": "Alterar o preço do produto.", 
                 "function": lambda product, new_value: setattr(product, 'price', float(new_value))
             }
@@ -148,13 +148,25 @@ class Stock:
         if product is None:
             print("Produto não encontrado.")
             return
-        
+
         action_object = next((action for action in self.update_actions if action['action'] == action_command), None)
         
         if action_object is None:
             print("Ação inválida.")
             return
         
+        if action_object['action'] == 'Categoria' and new_value not in self.sections_by_category.keys(): # criar nova categoria caso não exista
+            category = FinalCategory(new_value, product.category.father)
+            category.add_element(product)
+
+            product.category.remove_element(product)
+            if len(product.category.get_elements()) == 0:
+                del product.category # remover categoria final caso não tenha mais elementos
+
+            product.category = category
+            self.stock_section_update(product) # add categoria nas seções
+            new_value = category
+
         action_object['function'](product, new_value)
         print(f"Produto {product.name} atualizado: {action_object['description']} para {new_value}")
 

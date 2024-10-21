@@ -1,5 +1,5 @@
-from produto import Product
-from estoque import Stock
+from product import Product
+from stock import Stock
 
 import random
 
