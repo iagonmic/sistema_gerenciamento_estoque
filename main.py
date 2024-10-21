@@ -169,7 +169,7 @@ def plot_grafo(graph, edge_color, node_color, bg_color, font_size, layout_type, 
 def home():
     st.title(":package: Bem-vindo(a) ao Sistema de Gerenciamento de Estoque")
     st.subheader('Use o menu ao lado para navegar para outras páginas :flag-br:')
-    st.image('img/vegeta-careca.png')
+    st.image('vegeta-careca.png')
 
 def add_product():
     st.title("Atualizar Produto")
@@ -370,7 +370,7 @@ def main():
     ]
     
     with st.sidebar:
-        st.image('img/logo.jpg')
+        st.image('logo.jpg')
         menu = st.selectbox("Escolha uma opção", pages)
 
     if menu == "Home":
