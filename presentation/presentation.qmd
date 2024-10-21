@@ -1,0 +1,63 @@
+---
+title: "Sistema de Gerenciamento de Estoque 3.0"
+subtitle: "Atualização com Dijkstra e Streamlit"
+author:
+    - Iago Flávio
+    - Hertz Rafael
+    - Cauã Wendel
+format:
+  revealjs:
+    theme: dark
+    transition: slide
+    slide-number: true
+    preview-links: auto
+    incremental: true
+    embed-resources: true
+
+mainfont: Consolas
+---
+
+# Introdução
+
+- Implementação do grafo, dijkstra e streamlit
+- Funcionamento mais próximo da realidade de um aplicativo do dia a dia
+
+---
+
+## Objetivos da Nova Versão
+
+- Tornar a aplicação mais acessível para todos
+- Criar funcionalidade de supermercado com a classe `Store()`
+- Criar uma visualização gráfica aprimorada em tabela e grafo
+
+## Organização do projeto {auto-animate="true"}
+
+Divisão do projeto:
+
+- `main.py`: Agora guarda a funcionalidade do streamlit
+- `stock.py` e `store.py`: Guarda as funcionalidades de estoque e loja
+- `product.py` e `tree.py`: Tem as funcionalidades de estrutura geral do programa feito em árvore
+
+## Melhorias da Nova Versão {auto-animate="true"}
+
+Criação da nova classe representativa da loja com as seções dos produtos, a classe `Store()`
+
+## Melhorias da Nova Versão {auto-animate="true"}
+
+Visualização da loja:
+
+![](secoes.png)
+
+## Melhorias futuras
+
+- Implementação de um banco de dados para persistência dos dados
+- Otimização do Dijkstra usando Async e Pré-load
+
+# Demonstração do código
+
+Github: https://github.com/iagonmic/sistema_gerenciamento_estoque/
+
+Link do aplicativo: https://sistema-gerenciamento-estoque.streamlit.app/
+
+# Imagens do app
+

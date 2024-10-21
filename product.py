@@ -16,7 +16,8 @@ class Product:
         return f'{self.name}, id: {self.id}'
     
     def __eq__(self, other):
-        return self.id == other.id
+        if isinstance(other, Product):
+            return self.id == other.id
         
     
     def sale(self, amount):
