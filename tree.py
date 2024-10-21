@@ -68,6 +68,9 @@ class FinalCategory(Category):
 
     def remove_element(self, element):
         self.elements.remove(element)
+    
+    def get_elements(self):
+        return self.elements
 
     def can_insert_items(self):
         return True

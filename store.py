@@ -1,5 +1,5 @@
-from produto import Product
-from estoque import Stock
+from product import Product
+from stock import Stock
 
 import random
 
@@ -96,7 +96,8 @@ class Store:
         shortest_possibility = None
 
         for possibility in possibilities:
-            distance = sum([self.get_node_distance(possibility[index], possibility[index + 1]) for index in range(len(possibility) - 1)])
+            distance = sum([self.get_node_distance(possibility[index], possibility[index + 1])
+                            for index in range(len(possibility) - 1)])
 
             if shortest_distance == -1 or distance < shortest_distance:
                 shortest_distance = distance
