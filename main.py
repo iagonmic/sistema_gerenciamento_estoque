@@ -261,7 +261,8 @@ def show_route():
 
     selected_products = st.multiselect(
         "Escolha os produtos que deseja adicionar à lista",
-        options=st.session_state.stock.get_all_products()
+        options=st.session_state.stock.get_all_products(),
+        placeholder='Escolha uma opção'
     )
 
     if 'saved_products' not in st.session_state:
