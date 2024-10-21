@@ -13,7 +13,11 @@ class Product:
         return f'{self.name}, id: {self.id}'
             
     def __repr__(self) -> str:
-        return f'Product(id={self.id}, name={self.name}, category={self.category.name}, quantity={self.quantity}, price={self.price}, sales={self.sales})'
+        return f'{self.name}, id: {self.id}'
+    
+    def __eq__(self, other):
+        return self.id == other.id
+        
     
     def sale(self, amount):
         self.sales += amount

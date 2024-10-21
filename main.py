@@ -54,8 +54,14 @@ def create_edge(products):
 
     return edge
 
-def order_list(initial_list, product_name):
-    product_index = initial_list.index(product_name)
+def order_list(initial_list, product):
+
+    print(id(product))
+
+    for elemento in initial_list:   
+        print(id(elemento), '--', elemento, ';')
+
+    product_index = initial_list.index(product)
 
     first_item = initial_list[product_index]
     change_item = initial_list[0]
@@ -239,6 +245,14 @@ def update_product():
             st.success(f"{menu_update} do produto {selected_product.name} atualizado para {new_value}")
             show_products()
 
+def remove_duplicates(new_list):
+    temp_list = []
+
+    for item in new_list:
+        if item not in temp_list:
+            temp_list.append(item)
+    
+    return temp_list
 
 def show_route():
     st.title("Calcular Rota")
@@ -250,18 +264,16 @@ def show_route():
         options=st.session_state.stock.get_all_products()
     )
 
-    # Botão para salvar a seleção
-    if st.button("Salvar seleção"):
+    if 'saved_products' not in st.session_state:
         st.session_state.saved_products = []
 
+    # Botão para salvar a seleção
+    if st.button("Salvar seleção"):
         # Adiciona os produtos selecionados à lista de salvos
-        st.session_state.saved_products.extend(selected_products)
-        # Remove duplicatas
-        st.session_state.saved_products = list(set(st.session_state.saved_products))
-        st.success(f"Produtos salvos: {', '.join(selected_products)}")
+        st.session_state.saved_products = remove_duplicates(selected_products)
 
-    # Exibe os produtos salvos
-    if 'saved_products' in st.session_state and st.session_state.saved_products:
+        # Exibe os produtos salvos
+    if len(st.session_state.saved_products) != 0:
         st.write("Lista de produtos salvos:")
         st.write(st.session_state.saved_products)
 
@@ -269,12 +281,12 @@ def show_route():
         first_product = st.selectbox('Selecione o primeiro produto da lista:', st.session_state.saved_products)
 
         # Botão para atualizar o gráfico com a nova seleção
-        if st.button("Atualizar Gráfico"):
+        if st.button("Atualizar Grafo"):
             # Chama a função order_list e atualiza a lista de produtos
-            ordered_product_list = order_list(st.session_state.saved_products, str(first_product))  # Organiza a lista
+            ordered_product_list = order_list(st.session_state.saved_products, first_product)  # Organiza a lista
 
             # Atualiza o gráfico com a lista ordenada
-            product_list = [st.session_state.stock.get_product_by_name(product) for product in ordered_product_list]
+            product_list = [st.session_state.stock.get_product_by_name(product.name) for product in ordered_product_list]
 
             # Calcule o Dijkstra
             _, dijkstra = st.session_state.store.calculate_dijkstra(product_list)
