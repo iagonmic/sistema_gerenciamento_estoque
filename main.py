@@ -172,12 +172,12 @@ def home():
     st.image('vegeta-careca.png')
 
 def add_product():
-    st.title("Atualizar Produto")
+    st.title("Adicionar Produto")
 
     st.header("Digite as informações do produto que você quer adicionar:")
 
     # Campos para adicionar um produto com chaves únicas
-    nome = st.text_input("Nome do Produto", key="nome_produto")
+    nome = st.text_input("Nome do Produto", key="nome_produto", placeholder="Digite o nome do produto")
     categoria = st.selectbox("Categoria", st.session_state.categories, key="categoria_produto")
     quantidade = st.number_input("Quantidade", min_value=1, step=1, key="quantidade_produto")
     preco = st.number_input("Preço", min_value=0.0, step=0.50, key="preco_produto")

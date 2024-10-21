@@ -59,5 +59,32 @@ Github: https://github.com/iagonmic/sistema_gerenciamento_estoque/
 
 Link do aplicativo: https://sistema-gerenciamento-estoque.streamlit.app/
 
-# Imagens do app
+## Imagens do app {auto-animate="true"}
 
+![](1.png)
+
+## Imagens do app {auto-animate="true"}
+
+![](2.png)
+
+## Imagens do app {auto-animate="true"}
+
+![](3.png)
+
+## Imagens do app {auto-animate="true"}
+
+![](4.png)
+
+## Imagens do app {auto-animate="true"}
+
+![](5.png)
+
+## Imagens do app {auto-animate="true"}
+
+![](6.png)
+
+## Imagens do app {auto-animate="true"}
+
+![](7.png)
+
+# Obrigado!
