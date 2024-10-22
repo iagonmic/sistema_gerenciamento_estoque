@@ -28,18 +28,6 @@ def show_products(view=True, filter:dict={}):
 
     return df
 
-def show_products_by_category(category):
-    # Converte os objetos Product para uma lista de dicionários
-    product_dicts = [product.to_dict() for product in st.session_state.stock.get_all_products()]
-    
-    # Cria o DataFrame
-    df = pd.DataFrame(product_dicts).sort_values("ID")
-
-    df = df.query(f"Categoria=='{category}'")
-    
-    # Exibe o DataFrame no Streamlit
-    st.dataframe(df, hide_index=True, height=400, width= 1200)
-
 def create_edge(products):
     edge = []
 
@@ -78,6 +66,31 @@ def get_graph(arestas):
         graph.add_edge(first_product, last_product, weight=distance)
 
     return graph
+
+def graph(edge, lista):
+
+    # Opções de personalização definidas diretamente no código
+    edge_color = "#FFD700"  # Cor das arestas
+    node_color = "#36A2EB"  # Cor dos nós
+    text_color = "#F4E04D"  # Cor do texto da distância
+    node_text_color = "#FFFFFF"  # Cor do texto dentro dos nós
+    bg_color = "#0e1117"    # Cor do fundo
+    font_size = 15        # Tamanho da fonte
+    edge_width = 4        # Grossura das arestas
+    node_size = 60       # Tamanho dos nós
+    layout_type = "circular"  # Tipo de layout
+    box_color = "#0e1117"  # Cor da caixa de fundo para as distâncias
+    box_size = (10, 20)  # Tamanho da caixa de fundo (largura, altura)
+
+    graph = get_graph(edge)
+
+    # Plotar o grafo com as configurações
+    fig = plot_grafo(graph, edge_color, node_color, bg_color, font_size, layout_type, text_color, edge_width, node_size, box_color, box_size, node_text_color,  1080, 600)
+
+    first_product = lista[0]
+
+    st.title(f"Grafo da melhor rota para {first_product}:")
+    st.plotly_chart(fig)
 
 def plot_grafo(graph, edge_color, node_color, bg_color, font_size, layout_type, text_color, edge_width, node_size, box_color, box_size, node_text_color, fig_width, fig_height):
     # Determinar o layout com base na escolha do usuário
@@ -245,15 +258,6 @@ def update_product():
             st.success(f"{menu_update} do produto {selected_product.name} atualizado para {new_value}")
             show_products()
 
-def remove_duplicates(new_list):
-    temp_list = []
-
-    for item in new_list:
-        if item not in temp_list:
-            temp_list.append(item)
-    
-    return temp_list
-
 def show_route():
     st.title("Calcular Rota")
 
@@ -328,30 +332,14 @@ def show_products_page():
 
     show_products(filter=filter)
 
-def graph(edge, lista):
+def remove_duplicates(new_list):
+    temp_list = []
 
-    # Opções de personalização definidas diretamente no código
-    edge_color = "#FFD700"  # Cor das arestas
-    node_color = "#36A2EB"  # Cor dos nós
-    text_color = "#F4E04D"  # Cor do texto da distância
-    node_text_color = "#FFFFFF"  # Cor do texto dentro dos nós
-    bg_color = "#0e1117"    # Cor do fundo
-    font_size = 15        # Tamanho da fonte
-    edge_width = 4        # Grossura das arestas
-    node_size = 60       # Tamanho dos nós
-    layout_type = "circular"  # Tipo de layout
-    box_color = "#0e1117"  # Cor da caixa de fundo para as distâncias
-    box_size = (10, 20)  # Tamanho da caixa de fundo (largura, altura)
-
-    graph = get_graph(edge)
-
-    # Plotar o grafo com as configurações
-    fig = plot_grafo(graph, edge_color, node_color, bg_color, font_size, layout_type, text_color, edge_width, node_size, box_color, box_size, node_text_color,  1080, 600)
-
-    first_product = lista[0]
-
-    st.title(f"Grafo da melhor rota para {first_product}:")
-    st.plotly_chart(fig)
+    for item in new_list:
+        if item not in temp_list:
+            temp_list.append(item)
+    
+    return temp_list
 
 def main():
     if 'stock' not in st.session_state:
